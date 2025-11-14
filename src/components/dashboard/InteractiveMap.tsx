@@ -17,8 +17,8 @@ const problemTypes = [
   { id: "CurbRamp", label: "Rampas", color: "#EF4444" },
   { id: "Obstacle", label: "Obstáculos", color: "#F59E0B" },
   { id: "SurfaceProblem", label: "Superficie", color: "#EAB308" },
-  { id: "NoCrosswalk", label: "Cruces", color: "#3B82F6" },
-  { id: "Other", label: "Otros", color: "#6B7280" },
+  { id: "Crosswalk", label: "Cruces", color: "#3B82F6" },
+  { id: "NoCurbRamp", label: "SinRampa", color: "#6B7280" },
 ];
 
 export const InteractiveMap = ({ labels, loading, filters, onFilterChange }: InteractiveMapProps) => {

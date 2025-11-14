@@ -13,8 +13,8 @@ export const Header = () => {
           <p className="text-sm font-medium mb-2">Contexto Nacional - Chile</p>
           <div className="flex flex-wrap gap-6 text-sm">
             <div>
-              <span className="font-bold text-xl">2.6M</span>
-              <span className="ml-2">personas con discapacidad</span>
+              <span className="font-bold text-xl">1.9 M</span>
+              <span className="ml-2">personas con discapacidad </span>
             </div>
             <div>
               <span className="font-bold text-xl">1 de cada 5</span>

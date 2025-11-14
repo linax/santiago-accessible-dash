@@ -13,7 +13,8 @@ const COLORS = {
   Obstacle: "#F59E0B",
   SurfaceProblem: "#EAB308",
   NoCrosswalk: "#3B82F6",
-  Other: "#6B7280",
+  NoCurbRamp: "#6B7280",
+  Other: "#000000",
 };
 
 export const ProblemsDistribution = ({ labels, loading }: ProblemsDistributionProps) => {
@@ -38,8 +39,9 @@ export const ProblemsDistribution = ({ labels, loading }: ProblemsDistributionPr
   const data = Object.entries(distribution).map(([name, value]) => ({
     name: name === "CurbRamp" ? "Rampas" :
           name === "Obstacle" ? "Obstáculos" :
+          name === "NoCurbRamp" ? "SinRampa" :
           name === "SurfaceProblem" ? "Superficie" :
-          name === "NoCrosswalk" ? "Cruces" : "Otros",
+          name === "NoCrosswalk" ? "Cruces": "Otros",
     value,
     originalName: name,
   }));
