@@ -1,4 +1,4 @@
-import { LabelData } from "./types";
+import { LabelData, AggregateStats, LabelTypeStats } from "./types";
 
 const API_BASE = "https://sidewalk-santiago.cs.washington.edu/v3";
 
@@ -32,8 +32,59 @@ const FALLBACK_DATA: LabelData[] = Array.from({ length: 380 }, (_, i) => ({
   timestamp: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
 }));
 
+export const fetchAggregateStats = async (): Promise<AggregateStats | null> => {
+  try {
+    const response = await fetch(`${API_BASE}/api/aggregateStatistics`, {
+      mode: 'cors',
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API responded with status ${response.status}`);
+    }
+    
+    return await response.json() as AggregateStats;
+  } catch (error) {
+    console.warn("Could not fetch aggregate stats:", error);
+    return null;
+  }
+};
+
+// Función para convertir stats agregadas a LabelData simulado para gráficos
+export const convertAggregateToLabels = (stats: AggregateStats): LabelData[] => {
+  const labels: LabelData[] = [];
+  let labelId = 1;
+  
+  Object.entries(stats.labels).forEach(([labelType, data]) => {
+    if (typeof data === 'object' && 'count' in data) {
+      const typeData = data as LabelTypeStats;
+      const avgSeverity = typeData.severity_mean || 1;
+      
+      // Crear labels simulados basados en el count
+      for (let i = 0; i < typeData.count; i++) {
+        labels.push({
+          label_id: labelId++,
+          label_type: labelType,
+          severity: Math.round(avgSeverity),
+          lat: -33.4489 + (Math.random() - 0.5) * 0.05,
+          lng: -70.6693 + (Math.random() - 0.5) * 0.05,
+          timestamp: stats.avg_timestamp_last_100_labels,
+        });
+      }
+    }
+  });
+  
+  return labels;
+};
+
 export const fetchSidewalkData = async (): Promise<LabelData[]> => {
   try {
+    // Primero intentar obtener datos agregados
+    const aggregateStats = await fetchAggregateStats();
+    if (aggregateStats) {
+      return convertAggregateToLabels(aggregateStats);
+    }
+    
+    // Si falla, intentar el endpoint de clusters geográficos
     const response = await fetch(`${API_BASE}/api/labelClusters?filetype=geojson`, {
       mode: 'cors',
     });
@@ -44,15 +95,11 @@ export const fetchSidewalkData = async (): Promise<LabelData[]> => {
     
     const dataFromJson = await response.json() as GeoJSONResponse;
     
-    // Verificar que features existe y es un array
     if (!dataFromJson.features || !Array.isArray(dataFromJson.features)) {
       throw new Error("Invalid GeoJSON format: features array not found");
     }
     
     const data = dataFromJson.features;
-    
-    // Transform API data to our format
-    // GeoJSON coordinates are [longitude, latitude], but Leaflet needs [latitude, longitude]
     const labels: LabelData[] = [];
     
     for (const item of data) {
@@ -61,15 +108,14 @@ export const fetchSidewalkData = async (): Promise<LabelData[]> => {
         continue;
       }
       
-      // GeoJSON: [lng, lat] -> Leaflet: [lat, lng]
       const [lng, lat] = item.geometry.coordinates;
       
       labels.push({
         label_id: item.properties?.label_cluster_id || 0,
         label_type: item.properties?.label_type || "Other",
         severity: item.properties?.median_severity || 1,
-        lat: lat, // latitude
-        lng: lng, // longitude
+        lat: lat,
+        lng: lng,
         timestamp: item.properties?.avg_label_date,
       });
     }
