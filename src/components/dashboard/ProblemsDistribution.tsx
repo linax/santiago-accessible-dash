@@ -36,12 +36,18 @@ export const ProblemsDistribution = ({ labels, loading }: ProblemsDistributionPr
     return acc;
   }, {} as Record<string, number>);
 
+  const labelTypeMapping: Record<string, string> = {
+    "CurbRamp": "Rampas",
+    "Obstacle": "Obstáculos",
+    "NoCurbRamp": "SinRampa",
+    "SurfaceProblem": "Superficie",
+    "NoCrosswalk": "Cruces",
+    "Crosswalk": "Cruces",
+    "Other": "Otros"
+  };
+
   const data = Object.entries(distribution).map(([name, value]) => ({
-    name: name === "CurbRamp" ? "Rampas" :
-          name === "Obstacle" ? "Obstáculos" :
-          name === "NoCurbRamp" ? "SinRampa" :
-          name === "SurfaceProblem" ? "Superficie" :
-          name === "NoCrosswalk" ? "Cruces": "Otros",
+    name: labelTypeMapping[name] || "Otros",
     value,
     originalName: name,
   }));
