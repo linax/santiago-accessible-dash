@@ -30,11 +30,9 @@ export const SeverityChart = ({ labels, loading }: SeverityChartProps) => {
   }, {} as Record<number, number>);
 
   const data = [
-    { name: "Mínimo", severity: 1, count: severityCount[1] || 0 },
-    { name: "Bajo", severity: 2, count: severityCount[2] || 0 },
-    { name: "Moderado", severity: 3, count: severityCount[3] || 0 },
-    { name: "Alto", severity: 4, count: severityCount[4] || 0 },
-    { name: "Crítico", severity: 5, count: severityCount[5] || 0 },
+    { name: "Bajo", severity: 1, count: severityCount[1] || 0 },
+    { name: "Moderado", severity: 2, count: severityCount[2] || 0 },
+    { name: "Alto", severity: 3, count: severityCount[3] || 0 },
   ];
 
   return (

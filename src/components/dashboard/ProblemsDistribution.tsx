@@ -14,7 +14,7 @@ const COLORS = {
   SurfaceProblem: "#EAB308",
   NoCrosswalk: "#3B82F6",
   NoCurbRamp: "#6B7280",
-  Other: "#000000",
+
 };
 
 export const ProblemsDistribution = ({ labels, loading }: ProblemsDistributionProps) => {
@@ -42,15 +42,17 @@ export const ProblemsDistribution = ({ labels, loading }: ProblemsDistributionPr
     "NoCurbRamp": "SinRampa",
     "SurfaceProblem": "Superficie",
     "NoCrosswalk": "Cruces",
-    "Crosswalk": "Cruces",
-    "Other": "Otros"
+    "Crosswalk": "Cruces"
+ 
   };
 
-  const data = Object.entries(distribution).map(([name, value]) => ({
-    name: labelTypeMapping[name] || "Otros",
-    value,
-    originalName: name,
-  }));
+  const data = Object.entries(distribution)
+    .filter(([name]) => name in labelTypeMapping)
+    .map(([name, value]) => ({
+      name: labelTypeMapping[name],
+      value,
+      originalName: name,
+    }));
 
   return (
     <Card className="shadow-lg">

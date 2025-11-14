@@ -32,6 +32,17 @@ const FALLBACK_DATA: LabelData[] = Array.from({ length: 380 }, (_, i) => ({
   timestamp: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
 }));
 
+export const getOverallData = async (): Promise<LabelData[]> => {
+  try{
+    const response = await fetch(`${API_BASE}/api/overallStats?filetype=json`, {
+      mode: 'cors',
+    });
+
+    
+  }
+  catch(error){}
+}
+
 export const fetchSidewalkData = async (): Promise<LabelData[]> => {
   try {
     const response = await fetch(`${API_BASE}/api/labelClusters?filetype=geojson`, {
