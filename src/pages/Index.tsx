@@ -46,7 +46,18 @@ const Index = () => {
     const severityMatch = 
       label.severity >= filters.severityRange[0] && 
       label.severity <= filters.severityRange[1];
-    return typeMatch && severityMatch;
+    
+    // Filtro por tags de obstáculos
+    let tagMatch = true;
+    if (label.label_type === "Obstacle" && filters.obstacleTags && filters.obstacleTags.length > 0) {
+      // Si hay tags seleccionados, el label debe tener al menos uno de esos tags
+      const labelTags = label.tags || [];
+      tagMatch = filters.obstacleTags.some((selectedTag) => 
+        labelTags.includes(selectedTag)
+      );
+    }
+    
+    return typeMatch && severityMatch && tagMatch;
   });
 
   return (
@@ -77,7 +88,8 @@ const Index = () => {
             Mapa de Problemas de Accesibilidad
           </h2>
           <InteractiveMap 
-            labels={filteredLabels} 
+            labels={filteredLabels}
+            allLabels={labels}
             loading={loading}
             filters={filters}
             onFilterChange={setFilters}

@@ -2,6 +2,8 @@ import { LabelData } from "./types";
 
 const API_BASE = "https://sidewalk-santiago.cs.washington.edu/v3";
 
+const LABEL_URL ="https://sidewalk-santiago.cs.washington.edu/label/id/24986"
+
 // Tipo para GeoJSON Feature
 interface GeoJSONFeature {
   type: string;
@@ -11,9 +13,13 @@ interface GeoJSONFeature {
   };
   properties: {
     label_cluster_id?: number;
+    label_id?: number;
     label_type?: string;
-    median_severity?: number;
+    severity?: number;
     avg_label_date?: string;
+    time_created?: string;
+    tags?: string[];
+    description?: string | null;
   };
 }
 
@@ -38,14 +44,23 @@ export const getOverallData = async (): Promise<LabelData[]> => {
       mode: 'cors',
     });
 
-    
+    if (!response.ok) {
+      throw new Error(`API responded with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
   }
-  catch(error){}
+  catch(error){
+    console.warn("Error fetching overall data:", error);
+    return [];
+  }
 }
 
 export const fetchSidewalkData = async (): Promise<LabelData[]> => {
   try {
-    const response = await fetch(`${API_BASE}/api/labelClusters?filetype=geojson`, {
+    //labeled clusters: labelClusters?filetype=geojson
+    const response = await fetch(`${API_BASE}/api/rawLabels?filetype=geojson `, {
       mode: 'cors',
     });
     
@@ -76,12 +91,14 @@ export const fetchSidewalkData = async (): Promise<LabelData[]> => {
       const [lng, lat] = item.geometry.coordinates;
       
       labels.push({
-        label_id: item.properties?.label_cluster_id || 0,
+        label_id: item.properties?.label_id || item.properties?.label_cluster_id || 0,
         label_type: item.properties?.label_type || "Other",
-        severity: item.properties?.median_severity || 1,
+        severity: item.properties?.severity  || 1,
         lat: lat, // latitude
         lng: lng, // longitude
-        timestamp: item.properties?.avg_label_date,
+        timestamp: item.properties?.avg_label_date || item.properties?.time_created,
+        description: item.properties?.description || undefined,
+        tags: item.properties?.tags || [],
       });
     }
     

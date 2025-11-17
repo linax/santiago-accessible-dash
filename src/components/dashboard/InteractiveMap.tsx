@@ -1,13 +1,16 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 import { LabelData, ProblemFilter } from "@/lib/types";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 interface InteractiveMapProps {
   labels: LabelData[];
+  allLabels?: LabelData[]; // Labels sin filtrar para calcular tags únicos
   loading: boolean;
   filters: ProblemFilter;
   onFilterChange: (filters: ProblemFilter) => void;
@@ -21,10 +24,46 @@ const problemTypes = [
   { id: "NoCurbRamp", label: "SinRampa", color: "#6B7280" },
 ];
 
-export const InteractiveMap = ({ labels, loading, filters, onFilterChange }: InteractiveMapProps) => {
+// Diccionario de traducciones para tags de obstáculos
+const obstacleTagTranslations: Record<string, string> = {
+  "construction": "construcción",
+  "litter/garbage": "basura en la vereda",
+  "litter/gardbage": "basura en la vereda", // Manejo de typo en el tag original
+  "narrow": "vereda angosta",
+  "parked bike": "bicicleta estacionada",
+  "parked car": "auto estacionado",
+  "pole": "poste",
+  "sign": "letrero o señalética",
+  "tree": "árbol",
+};
+
+// Función helper para traducir tags
+const translateObstacleTag = (tag: string): string => {
+  return obstacleTagTranslations[tag.toLowerCase()] || tag;
+};
+
+export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterChange }: InteractiveMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.LayerGroup | null>(null);
+
+  // Obtener todos los tags únicos de los obstáculos (usar allLabels si está disponible, sino labels)
+  const obstacleTags = useMemo(() => {
+    const labelsToUse = allLabels || labels;
+    const tagsSet = new Set<string>();
+    labelsToUse
+      .filter((label) => label.label_type === "Obstacle" && label.tags)
+      .forEach((label) => {
+        label.tags?.forEach((tag) => {
+          if (tag && tag.trim()) {
+            tagsSet.add(tag.trim());
+          }
+        });
+      });
+    return Array.from(tagsSet).sort();
+  }, [allLabels, labels]);
+
+  const isObstacleSelected = filters.types.length === 0 || filters.types.includes("Obstacle");
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
@@ -66,6 +105,9 @@ export const InteractiveMap = ({ labels, loading, filters, onFilterChange }: Int
       });
 
       const stars = "★".repeat(label.severity) + "☆".repeat(3 - label.severity);
+      const tagsDisplay = label.tags && label.tags.length > 0 
+        ? `<p class="text-xs text-gray-500 mt-1">Tags: ${label.tags.map(tag => translateObstacleTag(tag)).join(", ")}</p>` 
+        : '';
       
       marker.bindPopup(`
         <div class="p-2">
@@ -75,6 +117,7 @@ export const InteractiveMap = ({ labels, loading, filters, onFilterChange }: Int
             ${label.lat.toFixed(4)}, ${label.lng.toFixed(4)}
           </p>
           ${label.timestamp ? `<p class="text-xs text-gray-500 mt-1">${new Date(label.timestamp).toLocaleDateString()}</p>` : ''}
+          ${tagsDisplay}
         </div>
       `);
 
@@ -87,7 +130,23 @@ export const InteractiveMap = ({ labels, loading, filters, onFilterChange }: Int
       ? filters.types.filter((t) => t !== typeId)
       : [...filters.types, typeId];
     
-    onFilterChange({ ...filters, types: newTypes });
+    // Si se deselecciona Obstacle, limpiar los tags seleccionados
+    const newObstacleTags = typeId === "Obstacle" && newTypes.includes("Obstacle")
+      ? filters.obstacleTags
+      : typeId === "Obstacle" && !newTypes.includes("Obstacle")
+      ? []
+      : filters.obstacleTags;
+    
+    onFilterChange({ ...filters, types: newTypes, obstacleTags: newObstacleTags });
+  };
+
+  const toggleObstacleTag = (tag: string) => {
+    const currentTags = filters.obstacleTags || [];
+    const newTags = currentTags.includes(tag)
+      ? currentTags.filter((t) => t !== tag)
+      : [...currentTags, tag];
+    
+    onFilterChange({ ...filters, obstacleTags: newTags });
   };
 
   return (
@@ -112,6 +171,43 @@ export const InteractiveMap = ({ labels, loading, filters, onFilterChange }: Int
             </div>
           ))}
         </div>
+        
+        {/* Subcategorías de tags para Obstáculos en acordeón */}
+        {isObstacleSelected && obstacleTags.length > 0 && (
+          <div className="mt-6">
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="obstacle-tags" className="border-none">
+                <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline py-2">
+                  <div className="flex items-center gap-2">
+                    <span>Subcategorías de Obstáculos (por tags)</span>
+                    <Badge variant="secondary" className="ml-1 text-xs">
+                      {obstacleTags.length}
+                    </Badge>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="flex flex-wrap gap-3 pt-2">
+                    {obstacleTags.map((tag) => (
+                      <div key={tag} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`tag-${tag}`}
+                          checked={(filters.obstacleTags || []).length === 0 || (filters.obstacleTags || []).includes(tag)}
+                          onCheckedChange={() => toggleObstacleTag(tag)}
+                        />
+                        <Label 
+                          htmlFor={`tag-${tag}`} 
+                          className="text-sm cursor-pointer"
+                        >
+                          {translateObstacleTag(tag)}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        )}
       </CardHeader>
       <CardContent>
         <div

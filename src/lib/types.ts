@@ -6,11 +6,13 @@ export interface LabelData {
   lng: number;
   timestamp?: string;
   description?: string;
+  tags?: string[];
 }
 
 export interface ProblemFilter {
   types: string[];
   severityRange: [number, number];
+  obstacleTags?: string[];
 }
 
 export interface GeographicZone {
