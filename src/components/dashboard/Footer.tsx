@@ -19,12 +19,12 @@ export const Footer = () => {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <a 
-                  href="https://sidewalk-santiago.cs.washington.edu" 
+                  href="https://sidewalk-rancagua.cs.washington.edu" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="hover:text-primary flex items-center gap-1"
                 >
-                  Sidewalk Project
+                  Sidewalk Project API
                   <ExternalLink className="h-3 w-3" />
                 </a>
               </li>
@@ -70,7 +70,7 @@ export const Footer = () => {
             <p className="text-xs text-muted-foreground">
               © 2025 Dashboard de Accesibilidad Santiago
               <br />
-              Powered by Ciudad Fácil and Sidewalk Project 
+              Powered by Sidewalk Project - University of Washington
             </p>
           </div>
         </div>

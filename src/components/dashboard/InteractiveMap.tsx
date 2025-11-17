@@ -96,7 +96,7 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
       const color = typeConfig?.color || "#6B7280";
 
       const marker = L.circleMarker([label.lat, label.lng], {
-        radius: 11,
+        radius: 8,
         fillColor: color,
         color: "#fff",
         weight: 2,
@@ -108,6 +108,7 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
       const tagsDisplay = label.tags && label.tags.length > 0 
         ? `<p class="text-xs text-gray-500 mt-1">Tags: ${label.tags.map(tag => translateObstacleTag(tag)).join(", ")}</p>` 
         : '';
+
       
       marker.bindPopup(`
         <div class="p-2">
