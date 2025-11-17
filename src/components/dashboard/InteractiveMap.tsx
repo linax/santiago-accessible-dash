@@ -149,8 +149,12 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
         fillOpacity: 0.8,
       });
 
-      const stars = "★".repeat(label.severity) + "☆".repeat(3 - label.severity);
-      const tagsDisplay = label.tags && label.tags.length > 0 
+      // Mostrar iconos de warning según la severidad
+      const warningIcons = "⚠️".repeat(label.severity);
+      
+      // Solo mostrar tags para Obstáculos y Problemas de Superficie
+      const shouldShowTags = label.label_type === "Obstacle" || label.label_type === "SurfaceProblem";
+      const tagsDisplay = shouldShowTags && label.tags && label.tags.length > 0 
         ? `<p class="text-xs text-gray-500 mt-1">Tags: ${label.tags.map(tag => translateTag(tag, label.label_type)).join(", ")}</p>` 
         : '';
 
@@ -158,11 +162,11 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
       marker.bindPopup(`
         <div class="p-2">
           <h3 class="font-bold mb-1">${typeConfig?.label || label.label_type}</h3>
-          <p class="text-sm mb-1">Severidad: ${stars}</p>
+          <p class="text-sm mb-1">Severidad: ${warningIcons}</p>
           <p class="text-xs text-gray-600">
-            ${label.lat.toFixed(4)}, ${label.lng.toFixed(4)}
+            Coordenadas: ${label.lat.toFixed(4)}, ${label.lng.toFixed(4)}
           </p>
-          ${label.timestamp ? `<p class="text-xs text-gray-500 mt-1">${new Date(label.timestamp).toLocaleDateString()}</p>` : ''}
+          ${label.timestamp ? `<p class="text-xs text-gray-500 mt-1">Fecha de evaluación: ${new Date(label.timestamp).toLocaleDateString()}</p>` : ''}
           ${tagsDisplay}
         </div>
       `);
@@ -171,13 +175,44 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
     });
   }, [labels, loading]);
 
-  // Función para seleccionar/deseleccionar todos los tipos
+  // Constantes y helpers
+  const allTypeIds = problemTypes.map(t => t.id);
+  const allTypesSelected = filters.types.length === 0;
+  const noTypesSelected = filters.types.length === allTypeIds.length && 
+    allTypeIds.every(id => filters.types.includes(id));
+
+  // Helper: verificar si todos los items de un array están seleccionados
+  const areAllItemsSelected = (selectedItems: string[], allItems: string[]): boolean => {
+    return selectedItems.length === 0 || 
+           (selectedItems.length === allItems.length && allItems.every(item => selectedItems.includes(item)));
+  };
+
+  // Helper: toggle genérico para arrays de selección
+  const toggleItem = (
+    item: string,
+    selectedItems: string[],
+    allItems: string[]
+  ): string[] => {
+    const allSelected = areAllItemsSelected(selectedItems, allItems);
+    
+    if (allSelected) {
+      // Todos seleccionados: deseleccionar todos excepto el clickeado
+      return allItems.filter(t => t !== item);
+    } else {
+      // Toggle normal
+      const newItems = selectedItems.includes(item)
+        ? selectedItems.filter(t => t !== item)
+        : [...selectedItems, item];
+      
+      // Si todos quedan seleccionados, retornar array vacío
+      return areAllItemsSelected(newItems, allItems) ? [] : newItems;
+    }
+  };
+
+  // Seleccionar/deseleccionar todos los tipos
   const toggleAllTypes = () => {
-    const allTypeIds = problemTypes.map(t => t.id);
-    // Si todos están seleccionados (length === 0), deseleccionar todos
-    if (filters.types.length === 0) {
-      // Deseleccionar todos: poner todos los tipos en el array para que no se muestre ninguno
-      // También limpiar todos los filtros de tags
+    if (allTypesSelected) {
+      // Deseleccionar todos: poner todos los tipos en el array y limpiar tags
       onFilterChange({ 
         ...filters, 
         types: allTypeIds,
@@ -185,109 +220,54 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
         surfaceProblemTags: []
       });
     } else {
-      // Si no todos están seleccionados, seleccionar todos (array vacío = todos seleccionados)
-      // También seleccionar todos los tags de obstáculos y problemas de superficie
-      const allObstacleTags = obstacleTags;
-      const allSurfaceProblemTags = surfaceProblemTags;
-      
+      // Seleccionar todos: array vacío y seleccionar todos los tags
       onFilterChange({ 
         ...filters, 
         types: [],
-        obstacleTags: allObstacleTags,
-        surfaceProblemTags: allSurfaceProblemTags
+        obstacleTags: [],
+        surfaceProblemTags: []
       });
     }
   };
 
-  // Obtener todos los IDs de tipos una sola vez
-  const allTypeIds = problemTypes.map(t => t.id);
-  
-  // Verificar si todos los tipos están seleccionados
-  const allTypesSelected = filters.types.length === 0;
-  // Verificar si ningún tipo está seleccionado (todos los tipos están en el array de exclusión)
-  const noTypesSelected = filters.types.length === allTypeIds.length && 
-    allTypeIds.every(id => filters.types.includes(id));
-
+  // Toggle de un tipo individual
   const toggleType = (typeId: string) => {
-    
     let newTypes: string[];
     
-    if (filters.types.length === 0) {
-      // Todos están seleccionados, deseleccionar todos excepto el clickeado
+    if (allTypesSelected) {
+      // Todos seleccionados: deseleccionar todos excepto el clickeado
       newTypes = allTypeIds.filter(id => id !== typeId);
     } else if (noTypesSelected) {
-      // Ninguno está seleccionado, seleccionar solo el clickeado
+      // Ninguno seleccionado: seleccionar solo el clickeado
       newTypes = [typeId];
     } else {
-      // Algunos están seleccionados, toggle normal
-      newTypes = filters.types.includes(typeId)
-        ? filters.types.filter((t) => t !== typeId)
-        : [...filters.types, typeId];
-      
-      // Si después del toggle todos están seleccionados, poner array vacío
-      if (newTypes.length === allTypeIds.length && allTypeIds.every(id => newTypes.includes(id))) {
-        newTypes = [];
-      }
+      // Toggle normal
+      newTypes = toggleItem(typeId, filters.types, allTypeIds);
     }
     
-    // Si se deselecciona Obstacle, limpiar los tags seleccionados
+    // Limpiar tags si se deselecciona el tipo correspondiente
     const isObstacleSelected = newTypes.length === 0 || newTypes.includes("Obstacle");
-    const newObstacleTags = isObstacleSelected
-      ? filters.obstacleTags
-      : [];
-    
-    // Si se deselecciona SurfaceProblem, limpiar los tags seleccionados
     const isSurfaceProblemSelected = newTypes.length === 0 || newTypes.includes("SurfaceProblem");
-    const newSurfaceProblemTags = isSurfaceProblemSelected
-      ? filters.surfaceProblemTags
-      : [];
     
-    onFilterChange({ ...filters, types: newTypes, obstacleTags: newObstacleTags, surfaceProblemTags: newSurfaceProblemTags });
+    onFilterChange({ 
+      ...filters, 
+      types: newTypes,
+      obstacleTags: isObstacleSelected ? filters.obstacleTags : [],
+      surfaceProblemTags: isSurfaceProblemSelected ? filters.surfaceProblemTags : []
+    });
   };
 
+  // Toggle de tags de obstáculos
   const toggleObstacleTag = (tag: string) => {
     const currentTags = filters.obstacleTags || [];
-    const allTagsSelected = currentTags.length === 0 || currentTags.length === obstacleTags.length;
-    
-    let newTags: string[];
-    if (allTagsSelected) {
-      // Todos están seleccionados, deseleccionar todos excepto el clickeado
-      newTags = obstacleTags.filter(t => t !== tag);
-    } else {
-      // Algunos están seleccionados, toggle normal
-      newTags = currentTags.includes(tag)
-        ? currentTags.filter((t) => t !== tag)
-        : [...currentTags, tag];
-      
-      // Si después del toggle todos están seleccionados, poner array vacío
-      if (newTags.length === obstacleTags.length && obstacleTags.every(t => newTags.includes(t))) {
-        newTags = [];
-      }
-    }
-    
+    const newTags = toggleItem(tag, currentTags, obstacleTags);
     onFilterChange({ ...filters, obstacleTags: newTags });
   };
 
+  // Toggle de tags de problemas de superficie
   const toggleSurfaceProblemTag = (tag: string) => {
     const currentTags = filters.surfaceProblemTags || [];
-    const allTagsSelected = currentTags.length === 0 || currentTags.length === surfaceProblemTags.length;
-    
-    let newTags: string[];
-    if (allTagsSelected) {
-      // Todos están seleccionados, deseleccionar todos excepto el clickeado
-      newTags = surfaceProblemTags.filter(t => t !== tag);
-    } else {
-      // Algunos están seleccionados, toggle normal
-      newTags = currentTags.includes(tag)
-        ? currentTags.filter((t) => t !== tag)
-        : [...currentTags, tag];
-      
-      // Si después del toggle todos están seleccionados, poner array vacío
-      if (newTags.length === surfaceProblemTags.length && surfaceProblemTags.every(t => newTags.includes(t))) {
-        newTags = [];
-      }
-    }
-    
+    const newTags = toggleItem(tag, currentTags, surfaceProblemTags);
     onFilterChange({ ...filters, surfaceProblemTags: newTags });
   };
 
@@ -352,11 +332,9 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
                 <AccordionContent>
                   <div className="flex flex-wrap gap-3 pt-2">
                     {obstacleTags.map((tag) => {
-                      // Un tag está seleccionado si: todos los tags están seleccionados (length === 0 o todos en el array)
-                      // O si el tag específico está en el array
-                      const allObstacleTagsSelected = (filters.obstacleTags || []).length === 0 || 
-                        (filters.obstacleTags || []).length === obstacleTags.length;
-                      const isTagSelected = allObstacleTagsSelected || (filters.obstacleTags || []).includes(tag);
+                      const currentTags = filters.obstacleTags || [];
+                      const allSelected = areAllItemsSelected(currentTags, obstacleTags);
+                      const isTagSelected = allSelected || currentTags.includes(tag);
                       
                       return (
                         <div key={tag} className="flex items-center space-x-2">
@@ -398,11 +376,9 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
                 <AccordionContent>
                   <div className="flex flex-wrap gap-3 pt-2">
                     {surfaceProblemTags.map((tag) => {
-                      // Un tag está seleccionado si: todos los tags están seleccionados (length === 0 o todos en el array)
-                      // O si el tag específico está en el array
-                      const allSurfaceProblemTagsSelected = (filters.surfaceProblemTags || []).length === 0 || 
-                        (filters.surfaceProblemTags || []).length === surfaceProblemTags.length;
-                      const isTagSelected = allSurfaceProblemTagsSelected || (filters.surfaceProblemTags || []).includes(tag);
+                      const currentTags = filters.surfaceProblemTags || [];
+                      const allSelected = areAllItemsSelected(currentTags, surfaceProblemTags);
+                      const isTagSelected = allSelected || currentTags.includes(tag);
                       
                       return (
                         <div key={tag} className="flex items-center space-x-2">
