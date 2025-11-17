@@ -114,7 +114,7 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
     if (!mapRef.current || mapInstanceRef.current) return;
 
     // Initialize map
-    const map = L.map(mapRef.current).setView([-33.4489, -70.6693], 13);
+    const map = L.map(mapRef.current).setView([-33.4411, -70.65343], 15);
     
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
