@@ -33,7 +33,14 @@ const FALLBACK_DATA: LabelData[] = Array.from({ length: 380 }, (_, i) => ({
 }));
 
 export const getOverallData = async (): Promise<LabelData[]> => {
-  return FALLBACK_DATA;
+  try{
+    const response = await fetch(`${API_BASE}/api/overallStats?filetype=json`, {
+      mode: 'cors',
+    });
+
+    
+  }
+  catch(error){}
 }
 
 export const fetchSidewalkData = async (): Promise<LabelData[]> => {

@@ -14,11 +14,11 @@ interface InteractiveMapProps {
 }
 
 const problemTypes = [
-  { id: "CurbRamp", label: "Rampas", color: "#10B981" },
-  { id: "Obstacle", label: "Obstáculos", color: "#F97316" },
-  { id: "SurfaceProblem", label: "Superficie", color: "#3B82F6" },
-  { id: "Crosswalk", label: "Cruces", color: "#EAB308" },
-  { id: "NoCurbRamp", label: "SinRampa", color: "#EF4444" },
+  { id: "CurbRamp", label: "Rampas", color: "#EF4444" },
+  { id: "Obstacle", label: "Obstáculos", color: "#F59E0B" },
+  { id: "SurfaceProblem", label: "Superficie", color: "#EAB308" },
+  { id: "Crosswalk", label: "Cruces", color: "#3B82F6" },
+  { id: "NoCurbRamp", label: "SinRampa", color: "#6B7280" },
 ];
 
 export const InteractiveMap = ({ labels, loading, filters, onFilterChange }: InteractiveMapProps) => {
@@ -57,7 +57,7 @@ export const InteractiveMap = ({ labels, loading, filters, onFilterChange }: Int
       const color = typeConfig?.color || "#6B7280";
 
       const marker = L.circleMarker([label.lat, label.lng], {
-        radius: 11,
+        radius: 8,
         fillColor: color,
         color: "#fff",
         weight: 2,
@@ -65,7 +65,7 @@ export const InteractiveMap = ({ labels, loading, filters, onFilterChange }: Int
         fillOpacity: 0.8,
       });
 
-      const stars = "★".repeat(label.severity) + "☆".repeat(3 - label.severity);
+      const stars = "★".repeat(label.severity) + "☆".repeat(5 - label.severity);
       
       marker.bindPopup(`
         <div class="p-2">
