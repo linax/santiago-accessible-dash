@@ -171,42 +171,122 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
     });
   }, [labels, loading]);
 
+  // Función para seleccionar/deseleccionar todos los tipos
+  const toggleAllTypes = () => {
+    const allTypeIds = problemTypes.map(t => t.id);
+    // Si todos están seleccionados (length === 0), deseleccionar todos
+    if (filters.types.length === 0) {
+      // Deseleccionar todos: poner todos los tipos en el array para que no se muestre ninguno
+      // También limpiar todos los filtros de tags
+      onFilterChange({ 
+        ...filters, 
+        types: allTypeIds,
+        obstacleTags: [],
+        surfaceProblemTags: []
+      });
+    } else {
+      // Si no todos están seleccionados, seleccionar todos (array vacío = todos seleccionados)
+      // También seleccionar todos los tags de obstáculos y problemas de superficie
+      const allObstacleTags = obstacleTags;
+      const allSurfaceProblemTags = surfaceProblemTags;
+      
+      onFilterChange({ 
+        ...filters, 
+        types: [],
+        obstacleTags: allObstacleTags,
+        surfaceProblemTags: allSurfaceProblemTags
+      });
+    }
+  };
+
+  // Obtener todos los IDs de tipos una sola vez
+  const allTypeIds = problemTypes.map(t => t.id);
+  
+  // Verificar si todos los tipos están seleccionados
+  const allTypesSelected = filters.types.length === 0;
+  // Verificar si ningún tipo está seleccionado (todos los tipos están en el array de exclusión)
+  const noTypesSelected = filters.types.length === allTypeIds.length && 
+    allTypeIds.every(id => filters.types.includes(id));
+
   const toggleType = (typeId: string) => {
-    const newTypes = filters.types.includes(typeId)
-      ? filters.types.filter((t) => t !== typeId)
-      : [...filters.types, typeId];
+    
+    let newTypes: string[];
+    
+    if (filters.types.length === 0) {
+      // Todos están seleccionados, deseleccionar todos excepto el clickeado
+      newTypes = allTypeIds.filter(id => id !== typeId);
+    } else if (noTypesSelected) {
+      // Ninguno está seleccionado, seleccionar solo el clickeado
+      newTypes = [typeId];
+    } else {
+      // Algunos están seleccionados, toggle normal
+      newTypes = filters.types.includes(typeId)
+        ? filters.types.filter((t) => t !== typeId)
+        : [...filters.types, typeId];
+      
+      // Si después del toggle todos están seleccionados, poner array vacío
+      if (newTypes.length === allTypeIds.length && allTypeIds.every(id => newTypes.includes(id))) {
+        newTypes = [];
+      }
+    }
     
     // Si se deselecciona Obstacle, limpiar los tags seleccionados
-    const newObstacleTags = typeId === "Obstacle" && newTypes.includes("Obstacle")
+    const isObstacleSelected = newTypes.length === 0 || newTypes.includes("Obstacle");
+    const newObstacleTags = isObstacleSelected
       ? filters.obstacleTags
-      : typeId === "Obstacle" && !newTypes.includes("Obstacle")
-      ? []
-      : filters.obstacleTags;
+      : [];
     
     // Si se deselecciona SurfaceProblem, limpiar los tags seleccionados
-    const newSurfaceProblemTags = typeId === "SurfaceProblem" && newTypes.includes("SurfaceProblem")
+    const isSurfaceProblemSelected = newTypes.length === 0 || newTypes.includes("SurfaceProblem");
+    const newSurfaceProblemTags = isSurfaceProblemSelected
       ? filters.surfaceProblemTags
-      : typeId === "SurfaceProblem" && !newTypes.includes("SurfaceProblem")
-      ? []
-      : filters.surfaceProblemTags;
+      : [];
     
     onFilterChange({ ...filters, types: newTypes, obstacleTags: newObstacleTags, surfaceProblemTags: newSurfaceProblemTags });
   };
 
   const toggleObstacleTag = (tag: string) => {
     const currentTags = filters.obstacleTags || [];
-    const newTags = currentTags.includes(tag)
-      ? currentTags.filter((t) => t !== tag)
-      : [...currentTags, tag];
+    const allTagsSelected = currentTags.length === 0 || currentTags.length === obstacleTags.length;
+    
+    let newTags: string[];
+    if (allTagsSelected) {
+      // Todos están seleccionados, deseleccionar todos excepto el clickeado
+      newTags = obstacleTags.filter(t => t !== tag);
+    } else {
+      // Algunos están seleccionados, toggle normal
+      newTags = currentTags.includes(tag)
+        ? currentTags.filter((t) => t !== tag)
+        : [...currentTags, tag];
+      
+      // Si después del toggle todos están seleccionados, poner array vacío
+      if (newTags.length === obstacleTags.length && obstacleTags.every(t => newTags.includes(t))) {
+        newTags = [];
+      }
+    }
     
     onFilterChange({ ...filters, obstacleTags: newTags });
   };
 
   const toggleSurfaceProblemTag = (tag: string) => {
     const currentTags = filters.surfaceProblemTags || [];
-    const newTags = currentTags.includes(tag)
-      ? currentTags.filter((t) => t !== tag)
-      : [...currentTags, tag];
+    const allTagsSelected = currentTags.length === 0 || currentTags.length === surfaceProblemTags.length;
+    
+    let newTags: string[];
+    if (allTagsSelected) {
+      // Todos están seleccionados, deseleccionar todos excepto el clickeado
+      newTags = surfaceProblemTags.filter(t => t !== tag);
+    } else {
+      // Algunos están seleccionados, toggle normal
+      newTags = currentTags.includes(tag)
+        ? currentTags.filter((t) => t !== tag)
+        : [...currentTags, tag];
+      
+      // Si después del toggle todos están seleccionados, poner array vacío
+      if (newTags.length === surfaceProblemTags.length && surfaceProblemTags.every(t => newTags.includes(t))) {
+        newTags = [];
+      }
+    }
     
     onFilterChange({ ...filters, surfaceProblemTags: newTags });
   };
@@ -216,26 +296,48 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
       <CardHeader>
         <CardTitle>Filtrar por tipo de problema</CardTitle>
         <div className="flex flex-wrap gap-4 mt-4">
-          {problemTypes.map((type) => (
-            <div key={type.id} className="flex items-center space-x-2">
-              <Checkbox
-                id={type.id}
-                checked={filters.types.length === 0 || filters.types.includes(type.id)}
-                onCheckedChange={() => toggleType(type.id)}
-              />
-              <Label htmlFor={type.id} className="flex items-center gap-2 cursor-pointer">
-                <div
-                  className="w-4 h-4 rounded-full"
-                  style={{ backgroundColor: type.color }}
+          {/* Checkbox "Seleccionar todo" con distintivo */}
+          <div className="flex items-center space-x-2 border-r pr-4 mr-2">
+            <Checkbox
+              id="select-all"
+              checked={allTypesSelected}
+              onCheckedChange={toggleAllTypes}
+              className="border-2 border-primary"
+            />
+            <Label htmlFor="select-all" className="flex items-center gap-2 cursor-pointer font-semibold text-primary">
+              Seleccionar todo
+            </Label>
+          </div>
+          
+          {/* Checkboxes individuales */}
+          {problemTypes.map((type) => {
+            // Un tipo está seleccionado si: todos están seleccionados (length === 0) 
+            // O si el tipo específico está en el array (pero no todos están en el array)
+            const isTypeSelected = allTypesSelected || 
+              (filters.types.includes(type.id) && !noTypesSelected);
+            
+            return (
+              <div key={type.id} className="flex items-center space-x-2">
+                <Checkbox
+                  id={type.id}
+                  checked={isTypeSelected}
+                  onCheckedChange={() => toggleType(type.id)}
                 />
-                {type.label}
-              </Label>
-            </div>
-          ))}
+                <Label htmlFor={type.id} className="flex items-center gap-2 cursor-pointer">
+                  <div
+                    className="w-4 h-4 rounded-full"
+                    style={{ backgroundColor: type.color }}
+                  />
+                  {type.label}
+                </Label>
+              </div>
+            );
+          })}
         </div>
         
         {/* Subcategorías de tags para Obstáculos en acordeón */}
-        {isObstacleSelected && obstacleTags.length > 0 && (
+        {/* Solo mostrar si Obstacle está seleccionado, hay tags disponibles, y no todos están deseleccionados */}
+        {isObstacleSelected && obstacleTags.length > 0 && !noTypesSelected && (
           <div className="mt-6">
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="obstacle-tags" className="border-none">
@@ -249,21 +351,29 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
                 </AccordionTrigger>
                 <AccordionContent>
                   <div className="flex flex-wrap gap-3 pt-2">
-                    {obstacleTags.map((tag) => (
-                      <div key={tag} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`obstacle-tag-${tag}`}
-                          checked={(filters.obstacleTags || []).length === 0 || (filters.obstacleTags || []).includes(tag)}
-                          onCheckedChange={() => toggleObstacleTag(tag)}
-                        />
-                        <Label 
-                          htmlFor={`obstacle-tag-${tag}`} 
-                          className="text-sm cursor-pointer"
-                        >
-                          {translateObstacleTag(tag)}
-                        </Label>
-                      </div>
-                    ))}
+                    {obstacleTags.map((tag) => {
+                      // Un tag está seleccionado si: todos los tags están seleccionados (length === 0 o todos en el array)
+                      // O si el tag específico está en el array
+                      const allObstacleTagsSelected = (filters.obstacleTags || []).length === 0 || 
+                        (filters.obstacleTags || []).length === obstacleTags.length;
+                      const isTagSelected = allObstacleTagsSelected || (filters.obstacleTags || []).includes(tag);
+                      
+                      return (
+                        <div key={tag} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`obstacle-tag-${tag}`}
+                            checked={isTagSelected}
+                            onCheckedChange={() => toggleObstacleTag(tag)}
+                          />
+                          <Label 
+                            htmlFor={`obstacle-tag-${tag}`} 
+                            className="text-sm cursor-pointer"
+                          >
+                            {translateObstacleTag(tag)}
+                          </Label>
+                        </div>
+                      );
+                    })}
                   </div>
                 </AccordionContent>
               </AccordionItem>
@@ -272,7 +382,8 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
         )}
 
         {/* Subcategorías de tags para Problemas de Superficie en acordeón */}
-        {isSurfaceProblemSelected && surfaceProblemTags.length > 0 && (
+        {/* Solo mostrar si SurfaceProblem está seleccionado, hay tags disponibles, y no todos están deseleccionados */}
+        {isSurfaceProblemSelected && surfaceProblemTags.length > 0 && !noTypesSelected && (
           <div className="mt-6">
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="surface-problem-tags" className="border-none">
@@ -286,21 +397,29 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
                 </AccordionTrigger>
                 <AccordionContent>
                   <div className="flex flex-wrap gap-3 pt-2">
-                    {surfaceProblemTags.map((tag) => (
-                      <div key={tag} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`surface-tag-${tag}`}
-                          checked={(filters.surfaceProblemTags || []).length === 0 || (filters.surfaceProblemTags || []).includes(tag)}
-                          onCheckedChange={() => toggleSurfaceProblemTag(tag)}
-                        />
-                        <Label 
-                          htmlFor={`surface-tag-${tag}`} 
-                          className="text-sm cursor-pointer"
-                        >
-                          {translateSurfaceProblemTag(tag)}
-                        </Label>
-                      </div>
-                    ))}
+                    {surfaceProblemTags.map((tag) => {
+                      // Un tag está seleccionado si: todos los tags están seleccionados (length === 0 o todos en el array)
+                      // O si el tag específico está en el array
+                      const allSurfaceProblemTagsSelected = (filters.surfaceProblemTags || []).length === 0 || 
+                        (filters.surfaceProblemTags || []).length === surfaceProblemTags.length;
+                      const isTagSelected = allSurfaceProblemTagsSelected || (filters.surfaceProblemTags || []).includes(tag);
+                      
+                      return (
+                        <div key={tag} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`surface-tag-${tag}`}
+                            checked={isTagSelected}
+                            onCheckedChange={() => toggleSurfaceProblemTag(tag)}
+                          />
+                          <Label 
+                            htmlFor={`surface-tag-${tag}`} 
+                            className="text-sm cursor-pointer"
+                          >
+                            {translateSurfaceProblemTag(tag)}
+                          </Label>
+                        </div>
+                      );
+                    })}
                   </div>
                 </AccordionContent>
               </AccordionItem>

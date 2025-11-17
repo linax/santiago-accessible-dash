@@ -43,15 +43,25 @@ const Index = () => {
   }, []);
 
   const filteredLabels = labels.filter((label) => {
-    const typeMatch = filters.types.length === 0 || filters.types.includes(label.label_type);
+    // Si filters.types está vacío, todos están seleccionados
+    // Si filters.types tiene elementos, solo esos están seleccionados
+    // Si filters.types tiene todos los tipos, ninguno está seleccionado (no mostrar nada)
+    const allTypeIds = ["CurbRamp", "Obstacle", "SurfaceProblem", "Crosswalk", "NoCurbRamp"];
+    const noTypesSelected = filters.types.length === allTypeIds.length && 
+      allTypeIds.every(id => filters.types.includes(id));
+    
+    const typeMatch = noTypesSelected 
+      ? false 
+      : (filters.types.length === 0 || filters.types.includes(label.label_type));
     const severityMatch = 
       label.severity >= filters.severityRange[0] && 
       label.severity <= filters.severityRange[1];
     
     // Filtro por tags de obstáculos
+    // Si obstacleTags está vacío o undefined, todos los tags están seleccionados (mostrar todos)
     let obstacleTagMatch = true;
     if (label.label_type === "Obstacle" && filters.obstacleTags && filters.obstacleTags.length > 0) {
-      // Si hay tags seleccionados, el label debe tener al menos uno de esos tags
+      // Si hay tags específicos seleccionados, el label debe tener al menos uno de esos tags
       const labelTags = label.tags || [];
       obstacleTagMatch = filters.obstacleTags.some((selectedTag) => 
         labelTags.includes(selectedTag)
@@ -59,9 +69,10 @@ const Index = () => {
     }
     
     // Filtro por tags de problemas de superficie
+    // Si surfaceProblemTags está vacío o undefined, todos los tags están seleccionados (mostrar todos)
     let surfaceProblemTagMatch = true;
     if (label.label_type === "SurfaceProblem" && filters.surfaceProblemTags && filters.surfaceProblemTags.length > 0) {
-      // Si hay tags seleccionados, el label debe tener al menos uno de esos tags
+      // Si hay tags específicos seleccionados, el label debe tener al menos uno de esos tags
       const labelTags = label.tags || [];
       surfaceProblemTagMatch = filters.surfaceProblemTags.some((selectedTag) => 
         labelTags.includes(selectedTag)
