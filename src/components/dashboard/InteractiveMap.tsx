@@ -57,7 +57,7 @@ export const InteractiveMap = ({ labels, loading, filters, onFilterChange }: Int
       const color = typeConfig?.color || "#6B7280";
 
       const marker = L.circleMarker([label.lat, label.lng], {
-        radius: 8,
+        radius: 11,
         fillColor: color,
         color: "#fff",
         weight: 2,
@@ -65,7 +65,7 @@ export const InteractiveMap = ({ labels, loading, filters, onFilterChange }: Int
         fillOpacity: 0.8,
       });
 
-      const stars = "★".repeat(label.severity) + "☆".repeat(5 - label.severity);
+      const stars = "★".repeat(label.severity) + "☆".repeat(3 - label.severity);
       
       marker.bindPopup(`
         <div class="p-2">

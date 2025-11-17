@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Header } from "@/components/dashboard/Header";
 import { NationalKPIs } from "@/components/dashboard/NationalKPIs";
-import { BarriersChart } from "@/components/dashboard/BarriersChart";
 import { ApiKPIs } from "@/components/dashboard/ApiKPIs";
 import { InteractiveMap } from "@/components/dashboard/InteractiveMap";
 import { ProblemsDistribution } from "@/components/dashboard/ProblemsDistribution";
