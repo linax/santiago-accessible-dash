@@ -4,25 +4,25 @@ import { Card, CardContent } from "@/components/ui/card";
 const kpis = [
   {
     icon: Users,
-    value: "2.6M",
+    value: "1.9M",
     label: "Personas con discapacidad",
     color: "text-primary",
   },
   {
     icon: TrendingUp,
-    value: "16.7%",
+    value: "11.1%",
     label: "Porcentaje de la población",
     color: "text-primary",
   },
   {
     icon: UserCheck,
-    value: "20%",
-    label: "Reportan barreras de movilidad",
+    value: "+900.000",
+    label: "Personas con dificultad para caminar o subir escaleras",
     color: "text-warning",
   },
   {
     icon: Users2,
-    value: "2.8M",
+    value: "43%",
     label: "Adultos mayores 65+",
     color: "text-primary",
   },

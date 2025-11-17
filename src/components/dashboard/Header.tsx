@@ -17,7 +17,7 @@ export const Header = () => {
               <span className="ml-2">personas con discapacidad </span>
             </div>
             <div>
-              <span className="font-bold text-xl">1 de cada 5</span>
+              <span className="font-bold text-xl">1 de cada 10</span>
               <span className="ml-2">reporta barreras de movilidad</span>
             </div>
           </div>

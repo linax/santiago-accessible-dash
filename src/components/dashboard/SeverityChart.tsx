@@ -8,7 +8,7 @@ interface SeverityChartProps {
   loading: boolean;
 }
 
-const SEVERITY_COLORS = ["#10B981", "#84CC16", "#EAB308", "#F59E0B", "#EF4444"];
+const SEVERITY_COLORS = ["#10B981", "#F59E0B", "#EAB308", "#F59E0B", "#EF4444"];
 
 export const SeverityChart = ({ labels, loading }: SeverityChartProps) => {
   if (loading) {
@@ -31,7 +31,7 @@ export const SeverityChart = ({ labels, loading }: SeverityChartProps) => {
 
   const data = [
     { name: "Bajo", severity: 1, count: severityCount[1] || 0 },
-    { name: "Moderado", severity: 2, count: severityCount[2] || 0 },
+    { name: "Medio", severity: 2, count: severityCount[2] || 0 },
     { name: "Alto", severity: 3, count: severityCount[3] || 0 },
   ];
 
@@ -51,7 +51,10 @@ export const SeverityChart = ({ labels, loading }: SeverityChartProps) => {
             />
             <Bar dataKey="count" radius={[0, 8, 8, 0]}>
               {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={SEVERITY_COLORS[entry.severity - 1]} />
+                <Cell 
+                  key={`cell-${index}`} 
+                  fill={entry.severity === 3 ? "#EF4444" : SEVERITY_COLORS[entry.severity - 1]} 
+                />
               ))}
             </Bar>
           </BarChart>

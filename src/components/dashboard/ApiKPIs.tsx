@@ -10,21 +10,21 @@ interface ApiKPIsProps {
 
 export const ApiKPIs = ({ labels, loading }: ApiKPIsProps) => {
   const totalProblems = labels.length;
-  const streetsAudited = 120; // Static for now
-  const totalStreets = 450; // Static for now
+  const streetsAudited = 4.4; // Static for now
+  const totalStreets = 44; // Static for now
   const coverage = Math.round((streetsAudited / totalStreets) * 100);
 
   const kpis = [
     {
       icon: Map,
       value: `${totalStreets} km`,
-      label: "Calles en Santiago",
+      label: "Área objetivo a mapear",
       color: "text-primary",
     },
     {
       icon: Search,
       value: `${streetsAudited} km`,
-      label: "Calles auditadas",
+      label: "Mapeados",
       color: "text-success",
     },
     {
@@ -36,7 +36,7 @@ export const ApiKPIs = ({ labels, loading }: ApiKPIsProps) => {
     {
       icon: CheckCircle,
       value: `${coverage}%`,
-      label: "Cobertura de auditorías",
+      label: "Cobertura de mapeos",
       color: "text-success",
     },
   ];

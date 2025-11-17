@@ -57,16 +57,12 @@ const Index = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* National Context */}
         <section className="my-16">
+        <h2 className="text-3xl font-bold mb-8 text-foreground">
+            Contexto nacional (CENSO 2024)
+          </h2>
           <NationalKPIs />
         </section>
 
-        {/* Barriers Chart */}
-        <section className="my-20">
-          <h2 className="text-3xl font-bold mb-8 text-foreground">
-            Principales barreras de movilidad urbana
-          </h2>
-          <BarriersChart />
-        </section>
 
         {/* API Data Section */}
         <section className="my-20">
