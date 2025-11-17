@@ -13,6 +13,7 @@ export interface ProblemFilter {
   types: string[];
   severityRange: [number, number];
   obstacleTags?: string[];
+  surfaceProblemTags?: string[];
 }
 
 export interface GeographicZone {

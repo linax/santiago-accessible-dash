@@ -49,16 +49,26 @@ const Index = () => {
       label.severity <= filters.severityRange[1];
     
     // Filtro por tags de obstáculos
-    let tagMatch = true;
+    let obstacleTagMatch = true;
     if (label.label_type === "Obstacle" && filters.obstacleTags && filters.obstacleTags.length > 0) {
       // Si hay tags seleccionados, el label debe tener al menos uno de esos tags
       const labelTags = label.tags || [];
-      tagMatch = filters.obstacleTags.some((selectedTag) => 
+      obstacleTagMatch = filters.obstacleTags.some((selectedTag) => 
         labelTags.includes(selectedTag)
       );
     }
     
-    return typeMatch && severityMatch && tagMatch;
+    // Filtro por tags de problemas de superficie
+    let surfaceProblemTagMatch = true;
+    if (label.label_type === "SurfaceProblem" && filters.surfaceProblemTags && filters.surfaceProblemTags.length > 0) {
+      // Si hay tags seleccionados, el label debe tener al menos uno de esos tags
+      const labelTags = label.tags || [];
+      surfaceProblemTagMatch = filters.surfaceProblemTags.some((selectedTag) => 
+        labelTags.includes(selectedTag)
+      );
+    }
+    
+    return typeMatch && severityMatch && obstacleTagMatch && surfaceProblemTagMatch;
   });
 
   return (

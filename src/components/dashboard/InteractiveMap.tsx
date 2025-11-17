@@ -17,11 +17,11 @@ interface InteractiveMapProps {
 }
 
 const problemTypes = [
-  { id: "CurbRamp", label: "Rampas", color: "#EF4444" },
-  { id: "Obstacle", label: "Obstáculos", color: "#F59E0B" },
-  { id: "SurfaceProblem", label: "Superficie", color: "#EAB308" },
-  { id: "Crosswalk", label: "Cruces", color: "#3B82F6" },
-  { id: "NoCurbRamp", label: "SinRampa", color: "#6B7280" },
+  { id: "CurbRamp", label: "Rampas", color: "#22C55E" }, // Verde
+  { id: "Obstacle", label: "Obstáculos", color: "#F97316" }, // Naranjo
+  { id: "SurfaceProblem", label: "Superficie", color: "#3B82F6" }, // Azul
+  { id: "Crosswalk", label: "Cruces", color: "#EAB308" }, // Amarillo
+  { id: "NoCurbRamp", label: "SinRampa", color: "#EF4444" }, // Rojo
 ];
 
 // Diccionario de traducciones para tags de obstáculos
@@ -37,9 +37,37 @@ const obstacleTagTranslations: Record<string, string> = {
   "tree": "árbol",
 };
 
-// Función helper para traducir tags
+// Diccionario de traducciones para tags de problemas de superficie
+const surfaceProblemTagTranslations: Record<string, string> = {
+  "brick/cobberstone": "adoquines",
+  "brick/cobblestone": "adoquines", // Manejo de variación de escritura
+  "bumpy": "disparejo",
+  "cracks": "grietas",
+  "height difference": "desnivel",
+  "narrow sidewalk": "vereda angosta",
+  "uneven/slanted": "inclinación",
+  "utility panel": "tapa o cámara de servicio",
+  "very broken": "muy rota",
+};
+
+// Función helper para traducir tags de obstáculos
 const translateObstacleTag = (tag: string): string => {
   return obstacleTagTranslations[tag.toLowerCase()] || tag;
+};
+
+// Función helper para traducir tags de problemas de superficie
+const translateSurfaceProblemTag = (tag: string): string => {
+  return surfaceProblemTagTranslations[tag.toLowerCase()] || tag;
+};
+
+// Función genérica para traducir tags según el tipo de label
+const translateTag = (tag: string, labelType: string): string => {
+  if (labelType === "Obstacle") {
+    return translateObstacleTag(tag);
+  } else if (labelType === "SurfaceProblem") {
+    return translateSurfaceProblemTag(tag);
+  }
+  return tag;
 };
 
 export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterChange }: InteractiveMapProps) => {
@@ -63,7 +91,24 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
     return Array.from(tagsSet).sort();
   }, [allLabels, labels]);
 
+  // Obtener todos los tags únicos de problemas de superficie
+  const surfaceProblemTags = useMemo(() => {
+    const labelsToUse = allLabels || labels;
+    const tagsSet = new Set<string>();
+    labelsToUse
+      .filter((label) => label.label_type === "SurfaceProblem" && label.tags)
+      .forEach((label) => {
+        label.tags?.forEach((tag) => {
+          if (tag && tag.trim()) {
+            tagsSet.add(tag.trim());
+          }
+        });
+      });
+    return Array.from(tagsSet).sort();
+  }, [allLabels, labels]);
+
   const isObstacleSelected = filters.types.length === 0 || filters.types.includes("Obstacle");
+  const isSurfaceProblemSelected = filters.types.length === 0 || filters.types.includes("SurfaceProblem");
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
@@ -106,7 +151,7 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
 
       const stars = "★".repeat(label.severity) + "☆".repeat(3 - label.severity);
       const tagsDisplay = label.tags && label.tags.length > 0 
-        ? `<p class="text-xs text-gray-500 mt-1">Tags: ${label.tags.map(tag => translateObstacleTag(tag)).join(", ")}</p>` 
+        ? `<p class="text-xs text-gray-500 mt-1">Tags: ${label.tags.map(tag => translateTag(tag, label.label_type)).join(", ")}</p>` 
         : '';
 
       
@@ -138,7 +183,14 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
       ? []
       : filters.obstacleTags;
     
-    onFilterChange({ ...filters, types: newTypes, obstacleTags: newObstacleTags });
+    // Si se deselecciona SurfaceProblem, limpiar los tags seleccionados
+    const newSurfaceProblemTags = typeId === "SurfaceProblem" && newTypes.includes("SurfaceProblem")
+      ? filters.surfaceProblemTags
+      : typeId === "SurfaceProblem" && !newTypes.includes("SurfaceProblem")
+      ? []
+      : filters.surfaceProblemTags;
+    
+    onFilterChange({ ...filters, types: newTypes, obstacleTags: newObstacleTags, surfaceProblemTags: newSurfaceProblemTags });
   };
 
   const toggleObstacleTag = (tag: string) => {
@@ -148,6 +200,15 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
       : [...currentTags, tag];
     
     onFilterChange({ ...filters, obstacleTags: newTags });
+  };
+
+  const toggleSurfaceProblemTag = (tag: string) => {
+    const currentTags = filters.surfaceProblemTags || [];
+    const newTags = currentTags.includes(tag)
+      ? currentTags.filter((t) => t !== tag)
+      : [...currentTags, tag];
+    
+    onFilterChange({ ...filters, surfaceProblemTags: newTags });
   };
 
   return (
@@ -180,7 +241,7 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
               <AccordionItem value="obstacle-tags" className="border-none">
                 <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline py-2">
                   <div className="flex items-center gap-2">
-                    <span>Subcategorías de Obstáculos (por tags)</span>
+                    <span>Filtrar por Tipos de Obstáculos</span>
                     <Badge variant="secondary" className="ml-1 text-xs">
                       {obstacleTags.length}
                     </Badge>
@@ -191,15 +252,52 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
                     {obstacleTags.map((tag) => (
                       <div key={tag} className="flex items-center space-x-2">
                         <Checkbox
-                          id={`tag-${tag}`}
+                          id={`obstacle-tag-${tag}`}
                           checked={(filters.obstacleTags || []).length === 0 || (filters.obstacleTags || []).includes(tag)}
                           onCheckedChange={() => toggleObstacleTag(tag)}
                         />
                         <Label 
-                          htmlFor={`tag-${tag}`} 
+                          htmlFor={`obstacle-tag-${tag}`} 
                           className="text-sm cursor-pointer"
                         >
                           {translateObstacleTag(tag)}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        )}
+
+        {/* Subcategorías de tags para Problemas de Superficie en acordeón */}
+        {isSurfaceProblemSelected && surfaceProblemTags.length > 0 && (
+          <div className="mt-6">
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="surface-problem-tags" className="border-none">
+                <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline py-2">
+                  <div className="flex items-center gap-2">
+                    <span>Filtrar por Problemas de Superficie</span>
+                    <Badge variant="secondary" className="ml-1 text-xs">
+                      {surfaceProblemTags.length}
+                    </Badge>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="flex flex-wrap gap-3 pt-2">
+                    {surfaceProblemTags.map((tag) => (
+                      <div key={tag} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`surface-tag-${tag}`}
+                          checked={(filters.surfaceProblemTags || []).length === 0 || (filters.surfaceProblemTags || []).includes(tag)}
+                          onCheckedChange={() => toggleSurfaceProblemTag(tag)}
+                        />
+                        <Label 
+                          htmlFor={`surface-tag-${tag}`} 
+                          className="text-sm cursor-pointer"
+                        >
+                          {translateSurfaceProblemTag(tag)}
                         </Label>
                       </div>
                     ))}
