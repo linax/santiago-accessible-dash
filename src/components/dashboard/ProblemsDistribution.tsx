@@ -9,12 +9,12 @@ interface ProblemsDistributionProps {
 }
 
 const COLORS = {
-  CurbRamp: "#EF4444",
-  Obstacle: "#F59E0B",
-  SurfaceProblem: "#EAB308",
-  NoCrosswalk: "#3B82F6",
-  NoCurbRamp: "#6B7280",
-
+  CurbRamp: "#10B981",
+  Obstacle: "#F97316",
+  SurfaceProblem: "#3B82F6",
+  NoCrosswalk: "#EAB308",
+  NoCurbRamp: "#EF4444",
+  Crosswalk: "#EAB308",
 };
 
 export const ProblemsDistribution = ({ labels, loading }: ProblemsDistributionProps) => {
