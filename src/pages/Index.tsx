@@ -12,6 +12,7 @@ import { TimelineChart } from "@/components/dashboard/TimelineChart";
 import { CriticalZones } from "@/components/dashboard/CriticalZones";
 import { CallToAction } from "@/components/dashboard/CallToAction";
 import { Footer } from "@/components/dashboard/Footer";
+import { Separator } from "@/components/ui/separator";
 import { fetchSidewalkData, getOverallData } from "@/lib/api";
 import { LabelData, ProblemFilter } from "@/lib/types";
 
@@ -102,6 +103,14 @@ const Index = () => {
           <NationalKPIs />
         </section>
 
+        {/* Separator */}
+        <div className="my-16 flex items-center gap-4">
+          <Separator className="flex-1" />
+          <div className="text-muted-foreground text-sm font-medium px-4">
+            Datos de la Comuna de Santiago
+          </div>
+          <Separator className="flex-1" />
+        </div>
 
         {/* API Data Section */}
         <section className="my-20">

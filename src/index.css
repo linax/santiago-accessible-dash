@@ -40,6 +40,9 @@ All colors MUST be HSL.
     
     --danger: 0 72.2% 50.6%;
     --danger-foreground: 0 0% 100%;
+    
+    --yellow: 45 93% 47%;
+    --yellow-foreground: 0 0% 100%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
@@ -101,6 +104,9 @@ All colors MUST be HSL.
     
     --danger: 0 72.2% 50.6%;
     --danger-foreground: 0 0% 100%;
+    
+    --yellow: 45 93% 47%;
+    --yellow-foreground: 0 0% 100%;
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
