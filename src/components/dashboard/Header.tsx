@@ -2,14 +2,14 @@ export const Header = () => {
   return (
     <header className="relative overflow-hidden">
       {/* Gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-blue-700" />
+      <div className="absolute inset-0 bg-green-soft" />
       
-      {/* Semi-transparent overlay */}
-      <div className="absolute inset-0 bg-black/20" />
+      
+      {/* Removed overlay for better contrast */
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* National context - smaller */}
-        <div className="mb-8 text-primary-foreground/90">
+        <div className="mb-8 text-green-soft-foreground/80">
           <p className="text-sm font-medium mb-2">Contexto Nacional - Chile</p>
           <div className="flex flex-wrap gap-6 text-sm">
             <div>
@@ -24,7 +24,7 @@ export const Header = () => {
         </div>
 
         {/* Local hero - larger */}
-        <div className="text-primary-foreground">
+        <div className="text-green-soft-foreground">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
             Dashboard de Accesibilidad
             <span className="block mt-2 text-3xl md:text-4xl lg:text-5xl">Comuna de Santiago</span>

@@ -43,6 +43,9 @@ All colors MUST be HSL.
     
     --yellow: 45 93% 47%;
     --yellow-foreground: 0 0% 100%;
+    
+    --green-soft: 142 52% 65%;
+    --green-soft-foreground: 0 0% 13%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
@@ -107,6 +110,9 @@ All colors MUST be HSL.
     
     --yellow: 45 93% 47%;
     --yellow-foreground: 0 0% 100%;
+    
+    --green-soft: 142 52% 65%;
+    --green-soft-foreground: 0 0% 13%;
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
