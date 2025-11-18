@@ -70,7 +70,7 @@ export const Footer = () => {
             <p className="text-xs text-muted-foreground">
               © 2025 Dashboard de Accesibilidad Santiago
               <br />
-              Powered by Sidewalk Project - University of Washington
+              Powered by Ciudad Fácil y  Sidewalk Project 
             </p>
           </div>
         </div>

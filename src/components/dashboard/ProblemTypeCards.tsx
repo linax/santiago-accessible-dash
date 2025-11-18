@@ -10,10 +10,8 @@ interface ProblemTypeCardsProps {
 }
 
 const problemConfig = [
-  { type: "CurbRamp", label: "Rampas", icon: TriangleRight, color: "text-muted-foreground" },
   { type: "Obstacle", label: "Obstáculos", icon: Construction, color: "text-warning" },
   { type: "SurfaceProblem", label: "Superficie", icon: LandPlot, color: "text-warning" },
-  { type: "Crosswalk", label: "Cruces", icon: Cross, color: "text-primary" },
   { type: "NoCurbRamp", label: "NoCurbRamp", icon: AlertTriangle, color: "text-danger" },
 ];
 

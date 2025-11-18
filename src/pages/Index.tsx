@@ -144,21 +144,7 @@ const Index = () => {
           <ProblemTypeCards labels={filteredLabels} loading={loading} />
         </section>
 
-        {/* Timeline */}
-        <section className="my-20">
-          <h2 className="text-3xl font-bold mb-8 text-foreground">
-            Evolución Temporal
-          </h2>
-          <TimelineChart labels={filteredLabels} loading={loading} />
-        </section>
-
-        {/* Critical Zones */}
-        <section className="my-20">
-          <h2 className="text-3xl font-bold mb-8 text-foreground">
-            Zonas Críticas
-          </h2>
-          <CriticalZones labels={filteredLabels} loading={loading} />
-        </section>
+  
 
         {/* CTA */}
         <section className="my-20">
