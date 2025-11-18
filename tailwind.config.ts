@@ -51,6 +51,10 @@ export default {
           DEFAULT: "hsl(var(--green-soft))",
           foreground: "hsl(var(--green-soft-foreground))",
         },
+        "green-light": {
+          DEFAULT: "hsl(var(--green-light))",
+          foreground: "hsl(var(--green-light-foreground))",
+        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
