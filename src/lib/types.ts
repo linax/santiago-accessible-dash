@@ -7,6 +7,7 @@ export interface LabelData {
   timestamp?: string;
   description?: string;
   tags?: string[];
+  gsv_panorama_id?: string;
 }
 
 export interface ProblemFilter {

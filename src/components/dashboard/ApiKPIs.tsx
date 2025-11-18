@@ -6,24 +6,26 @@ import { LabelData } from "@/lib/types";
 interface ApiKPIsProps {
   labels: LabelData[];
   loading: boolean;
+  kmExplored: number | null;
 }
 
-export const ApiKPIs = ({ labels, loading }: ApiKPIsProps) => {
+const TOTAL_STREETS = 42; // Valor constante compartido
+
+export const ApiKPIs = ({ labels, loading, kmExplored }: ApiKPIsProps) => {
   const totalProblems = labels.length;
-  const streetsAudited = 4.4; // Static for now
-  const totalStreets = 44; // Static for now
-  const coverage = Math.round((streetsAudited / totalStreets) * 100);
+  const streetsAudited = kmExplored ?? 5.4; // Usar valor dinámico o fallback
+  const coverage = Math.round((streetsAudited / TOTAL_STREETS) * 100);
 
   const kpis = [
     {
       icon: Map,
-      value: `${totalStreets} km`,
+      value: `${TOTAL_STREETS} km`,
       label: "Área objetivo a mapear",
       color: "text-primary",
     },
     {
       icon: Search,
-      value: `${streetsAudited} km`,
+      value: `${Math.trunc(streetsAudited)} km`,
       label: "Mapeados",
       color: "text-success",
     },

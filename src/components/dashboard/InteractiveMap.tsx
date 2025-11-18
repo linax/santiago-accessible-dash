@@ -157,6 +157,11 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
       const tagsDisplay = shouldShowTags && label.tags && label.tags.length > 0 
         ? `<p class="text-xs text-gray-500 mt-1">Tags: ${label.tags.map(tag => translateTag(tag, label.label_type)).join(", ")}</p>` 
         : '';
+      
+      // Link a imagen de evaluación si hay gsv_panorama_id
+      const imageLink = label.gsv_panorama_id 
+        ? `<p class="text-xs mt-2"><a href="https://www.google.com/maps/@?api=1&map_action=pano&pano=${label.gsv_panorama_id}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">Imagen de evaluación</a></p>`
+        : '';
 
       
       marker.bindPopup(`
@@ -168,6 +173,7 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
           </p>
           ${label.timestamp ? `<p class="text-xs text-gray-500 mt-1">Fecha de evaluación: ${new Date(label.timestamp).toLocaleDateString()}</p>` : ''}
           ${tagsDisplay}
+          ${imageLink}
         </div>
       `);
 
@@ -274,7 +280,7 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Filtrar por tipo de problema</CardTitle>
+        <CardTitle>Filtrar por tipo de atributo</CardTitle>
         <div className="flex flex-wrap gap-4 mt-4">
           {/* Checkbox "Seleccionar todo" con distintivo */}
           <div className="flex items-center space-x-2 border-r pr-4 mr-2">

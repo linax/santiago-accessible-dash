@@ -22,7 +22,7 @@ export const ProblemsDistribution = ({ labels, loading }: ProblemsDistributionPr
     return (
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle>Distribución de Problemas</CardTitle>
+          <CardTitle>Distribución de Atributos</CardTitle>
         </CardHeader>
         <CardContent>
           <Skeleton className="h-[300px] w-full" />
@@ -57,7 +57,7 @@ export const ProblemsDistribution = ({ labels, loading }: ProblemsDistributionPr
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Distribución de Problemas</CardTitle>
+        <CardTitle>Distribución de Atributos</CardTitle>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>

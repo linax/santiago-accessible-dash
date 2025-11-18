@@ -15,7 +15,7 @@ export const SeverityChart = ({ labels, loading }: SeverityChartProps) => {
     return (
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle>Severidad de Problemas</CardTitle>
+          <CardTitle>Severidad de Atributos</CardTitle>
         </CardHeader>
         <CardContent>
           <Skeleton className="h-[300px] w-full" />
@@ -38,7 +38,7 @@ export const SeverityChart = ({ labels, loading }: SeverityChartProps) => {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Severidad de Problemas</CardTitle>
+        <CardTitle>Severidad de Atributos</CardTitle>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>

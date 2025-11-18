@@ -20,6 +20,7 @@ interface GeoJSONFeature {
     time_created?: string;
     tags?: string[];
     description?: string | null;
+    gsv_panorama_id?: string;
   };
 }
 
@@ -38,7 +39,32 @@ const FALLBACK_DATA: LabelData[] = Array.from({ length: 380 }, (_, i) => ({
   timestamp: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
 }));
 
-export const getOverallData = async (): Promise<LabelData[]> => {
+// Tipo para la respuesta del endpoint overallStats
+export interface OverallStatsResponse {
+  launch_date?: string;
+  avg_timestamp_last_100_labels?: string;
+  km_explored?: number;
+  km_explored_no_overlap?: number;
+  user_counts?: {
+    all_users?: number;
+    labelers?: number;
+    validators?: number;
+    registered?: number;
+    anonymous?: number;
+    turker?: number;
+    researcher?: number;
+  };
+  labels?: {
+    label_count?: number;
+    [key: string]: unknown;
+  };
+  validations?: {
+    total_validations?: number;
+    [key: string]: unknown;
+  };
+}
+
+export const getOverallData = async (): Promise<OverallStatsResponse | null> => {
   try{
     const response = await fetch(`${API_BASE}/api/overallStats?filetype=json`, {
       mode: 'cors',
@@ -48,12 +74,12 @@ export const getOverallData = async (): Promise<LabelData[]> => {
       throw new Error(`API responded with status ${response.status}`);
     }
 
-    const data = await response.json();
+    const data = await response.json() as OverallStatsResponse;
     return data;
   }
   catch(error){
     console.warn("Error fetching overall data:", error);
-    return [];
+    return null;
   }
 }
 
@@ -99,6 +125,7 @@ export const fetchSidewalkData = async (): Promise<LabelData[]> => {
         timestamp: item.properties?.avg_label_date || item.properties?.time_created,
         description: item.properties?.description || undefined,
         tags: item.properties?.tags || [],
+        gsv_panorama_id: item.properties?.gsv_panorama_id || undefined,
       });
     }
     

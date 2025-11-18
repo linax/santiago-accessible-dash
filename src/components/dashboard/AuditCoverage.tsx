@@ -6,12 +6,14 @@ import { LabelData } from "@/lib/types";
 interface AuditCoverageProps {
   labels: LabelData[];
   loading: boolean;
+  kmExplored: number | null;
 }
 
-export const AuditCoverage = ({ labels, loading }: AuditCoverageProps) => {
-  const totalKm = 450;
-  const auditedKm = 120;
-  const percentage = Math.round((auditedKm / totalKm) * 100);
+const TOTAL_STREETS = 42; // Mismo valor que en ApiKPIs
+
+export const AuditCoverage = ({ labels, loading, kmExplored }: AuditCoverageProps) => {
+  const streetsAudited = kmExplored ?? 5.4; // Usar valor dinámico o fallback
+  const percentage = Math.round((streetsAudited / TOTAL_STREETS) * 100);
 
   if (loading) {
     return (
@@ -31,7 +33,7 @@ export const AuditCoverage = ({ labels, loading }: AuditCoverageProps) => {
         <div className="mb-6">
           <h3 className="text-2xl font-bold mb-2 text-foreground">Cobertura de Auditorías</h3>
           <p className="text-muted-foreground">
-            {auditedKm} km auditados de {totalKm} km totales en la comuna
+            {Math.trunc(streetsAudited)} km auditados de {TOTAL_STREETS} km totales en la comuna
           </p>
         </div>
         

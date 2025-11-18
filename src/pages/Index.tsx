@@ -12,13 +12,14 @@ import { TimelineChart } from "@/components/dashboard/TimelineChart";
 import { CriticalZones } from "@/components/dashboard/CriticalZones";
 import { CallToAction } from "@/components/dashboard/CallToAction";
 import { Footer } from "@/components/dashboard/Footer";
-import { fetchSidewalkData } from "@/lib/api";
+import { fetchSidewalkData, getOverallData } from "@/lib/api";
 import { LabelData, ProblemFilter } from "@/lib/types";
 
 const Index = () => {
   const [labels, setLabels] = useState<LabelData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [kmExplored, setKmExplored] = useState<number | null>(null);
   const [filters, setFilters] = useState<ProblemFilter>({
     types: [],
     severityRange: [1, 5],
@@ -28,8 +29,14 @@ const Index = () => {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await fetchSidewalkData();
-        setLabels(data);
+        const [labelsData, statsData] = await Promise.all([
+          fetchSidewalkData(),
+          getOverallData()
+        ]);
+        setLabels(labelsData);
+        if (statsData && statsData.km_explored !== undefined) {
+          setKmExplored(statsData.km_explored);
+        }
         setError(null);
       } catch (err) {
         console.error("Error loading Sidewalk data:", err);
@@ -101,7 +108,7 @@ const Index = () => {
           <h2 className="text-3xl font-bold mb-8 text-foreground">
             Datos de Accesibilidad en Santiago
           </h2>
-          <ApiKPIs labels={filteredLabels} loading={loading} />
+          <ApiKPIs labels={filteredLabels} loading={loading} kmExplored={kmExplored} />
         </section>
 
         {/* Interactive Map */}
@@ -126,7 +133,7 @@ const Index = () => {
 
         {/* Coverage */}
         <section className="my-20">
-          <AuditCoverage labels={filteredLabels} loading={loading} />
+          <AuditCoverage labels={filteredLabels} loading={loading} kmExplored={kmExplored} />
         </section>
 
         {/* Problem Type Cards */}

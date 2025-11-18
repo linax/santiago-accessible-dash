@@ -1,4 +1,4 @@
-import { AlertTriangle, Construction, Footprints, Navigation, HelpCircle } from "lucide-react";
+import { AlertTriangle, Construction, Footprints, Navigation, HelpCircle, TriangleRight, LandPlot, Cross } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LabelData } from "@/lib/types";
@@ -10,14 +10,14 @@ interface ProblemTypeCardsProps {
 }
 
 const problemConfig = [
-  { type: "CurbRamp", label: "Rampas", icon: Navigation, color: "text-danger" },
+  { type: "CurbRamp", label: "Rampas", icon: TriangleRight, color: "text-muted-foreground" },
   { type: "Obstacle", label: "Obstáculos", icon: Construction, color: "text-warning" },
-  { type: "SurfaceProblem", label: "Superficie", icon: Footprints, color: "text-warning" },
-  { type: "NoCrosswalk", label: "Cruces", icon: AlertTriangle, color: "text-primary" },
-  { type: "Other", label: "Otros", icon: HelpCircle, color: "text-muted-foreground" },
+  { type: "SurfaceProblem", label: "Superficie", icon: LandPlot, color: "text-warning" },
+  { type: "Crosswalk", label: "Cruces", icon: Cross, color: "text-primary" },
+  { type: "NoCurbRamp", label: "NoCurbRamp", icon: AlertTriangle, color: "text-danger" },
 ];
 
-export const ProblemTypeCards = ({ labels, loading }: ProblemTypeCardsProps) => {
+export const  ProblemTypeCards = ({ labels, loading }: ProblemTypeCardsProps) => {
   if (loading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
