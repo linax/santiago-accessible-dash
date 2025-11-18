@@ -32,15 +32,15 @@ export const NationalKPIs = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {kpis.map((kpi, index) => (
-        <Card key={index} className="shadow-lg hover:shadow-xl transition-shadow bg-yellow border-yellow">
+        <Card key={index} className="shadow-lg hover:shadow-xl transition-shadow bg-green-light border-green-light">
           <CardContent className="p-6">
             <div className="flex items-start justify-between mb-4">
-              <kpi.icon className="h-10 w-10 text-yellow-foreground" />
+              <kpi.icon className="h-10 w-10 text-green-light-foreground" />
             </div>
-            <div className="text-4xl font-bold mb-2 text-yellow-foreground">
+            <div className="text-4xl font-bold mb-2 text-green-light-foreground">
               {kpi.value}
             </div>
-            <p className="text-sm text-yellow-foreground/80">
+            <p className="text-sm text-green-light-foreground/80">
               {kpi.label}
             </p>
           </CardContent>
