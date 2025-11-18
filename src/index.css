@@ -49,6 +49,9 @@ All colors MUST be HSL.
     
     --green-light: 142 45% 80%;
     --green-light-foreground: 0 0% 13%;
+    
+    --green-dark: 142 60% 45%;
+    --green-dark-foreground: 0 0% 100%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
@@ -119,6 +122,9 @@ All colors MUST be HSL.
     
     --green-light: 142 45% 80%;
     --green-light-foreground: 0 0% 13%;
+    
+    --green-dark: 142 60% 45%;
+    --green-dark-foreground: 0 0% 100%;
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
