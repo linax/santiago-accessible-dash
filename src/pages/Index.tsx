@@ -123,7 +123,7 @@ const Index = () => {
         {/* Interactive Map */}
         <section className="my-20">
           <h2 className="text-3xl font-bold mb-8 text-foreground">
-            Mapa de Problemas de Accesibilidad
+            Mapa de Accesibilidad
           </h2>
           <InteractiveMap 
             labels={filteredLabels}

@@ -12,7 +12,7 @@ interface ProblemTypeCardsProps {
 const problemConfig = [
   { type: "Obstacle", label: "Obstáculos", icon: Construction, color: "text-warning" },
   { type: "SurfaceProblem", label: "Superficie", icon: LandPlot, color: "text-warning" },
-  { type: "NoCurbRamp", label: "NoCurbRamp", icon: AlertTriangle, color: "text-danger" },
+  { type: "NoCurbRamp", label: "Falta de rebajes de vereda", icon: AlertTriangle, color: "text-danger" },
 ];
 
 export const  ProblemTypeCards = ({ labels, loading }: ProblemTypeCardsProps) => {

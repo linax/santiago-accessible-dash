@@ -21,7 +21,7 @@ const problemTypes = [
   { id: "Obstacle", label: "Obstáculos", color: "#F97316" }, // Naranjo
   { id: "SurfaceProblem", label: "Superficie", color: "#3B82F6" }, // Azul
   { id: "Crosswalk", label: "Cruces", color: "#EAB308" }, // Amarillo
-  { id: "NoCurbRamp", label: "SinRampa", color: "#EF4444" }, // Rojo
+  { id: "NoCurbRamp", label: "Falta rebaje de vereda", color: "#EF4444" }, // Rojo
 ];
 
 // Diccionario de traducciones para tags de obstáculos
