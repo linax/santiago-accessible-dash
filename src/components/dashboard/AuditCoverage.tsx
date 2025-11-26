@@ -12,7 +12,7 @@ interface AuditCoverageProps {
 const TOTAL_STREETS = 42; // Mismo valor que en ApiKPIs
 
 export const AuditCoverage = ({ labels, loading, kmExplored }: AuditCoverageProps) => {
-  const streetsAudited = kmExplored ?? 5.4; // Usar valor dinámico o fallback
+  const streetsAudited = kmExplored ?? 6; // Usar valor dinámico o fallback
   const percentage = Math.round((streetsAudited / TOTAL_STREETS) * 100);
 
   if (loading) {

@@ -9,11 +9,11 @@ interface ApiKPIsProps {
   kmExplored: number | null;
 }
 
-const TOTAL_STREETS = 42; // Valor constante compartido
+const TOTAL_STREETS = 38; // Valor constante compartido
 
 export const ApiKPIs = ({ labels, loading, kmExplored }: ApiKPIsProps) => {
   const totalProblems = labels.length;
-  const streetsAudited = kmExplored ?? 5.4; // Usar valor dinámico o fallback
+  const streetsAudited = kmExplored ?? 6; // Usar valor dinámico o fallback
   const coverage = Math.round((streetsAudited / TOTAL_STREETS) * 100);
 
   const kpis = [
@@ -25,7 +25,7 @@ export const ApiKPIs = ({ labels, loading, kmExplored }: ApiKPIsProps) => {
     },
     {
       icon: Search,
-      value: `${Math.trunc(streetsAudited)} km`,
+      value: `${Math.round(streetsAudited)} km`,
       label: "Mapeados",
       color: "text-success",
     },
