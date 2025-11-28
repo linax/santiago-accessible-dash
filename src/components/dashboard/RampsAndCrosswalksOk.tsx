@@ -1,25 +1,24 @@
-import { AlertTriangle, Construction, Footprints, Navigation, HelpCircle, TriangleRight, LandPlot, Cross } from "lucide-react";
+import { Footprints, Navigation } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LabelData } from "@/lib/types";
 import { Progress } from "@/components/ui/progress";
 
-interface ProblemTypeCardsProps {
+interface RampsAndCrosswalksOkProps {
   labels: LabelData[];
   loading: boolean;
 }
 
-const problemConfig = [
-  { type: "Obstacle", label: "Obstáculos en la vereda", icon: Construction, color: "text-warning" },
-  { type: "SurfaceProblem", label: "Problema de superficie", icon: LandPlot, color: "text-warning" },
-  { type: "NoCurbRamp", label: "Falta de rebajes de vereda", icon: AlertTriangle, color: "text-danger" },
+const config = [
+  { type: "CurbRamp", label: "Rampas en buen estado", icon: Navigation, color: "text-success" },
+  { type: "Crosswalk", label: "Cruces en buen estado", icon: Footprints, color: "text-success" },
 ];
 
-export const  ProblemTypeCards = ({ labels, loading }: ProblemTypeCardsProps) => {
+export const RampsAndCrosswalksOk = ({ labels, loading }: RampsAndCrosswalksOkProps) => {
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[...Array(5)].map((_, i) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {[...Array(2)].map((_, i) => (
           <Card key={i}>
             <CardContent className="p-6">
               <Skeleton className="h-12 w-12 mb-4" />
@@ -33,19 +32,22 @@ export const  ProblemTypeCards = ({ labels, loading }: ProblemTypeCardsProps) =>
     );
   }
 
-  const stats = problemConfig.map((config) => {
-    const typeLabels = labels.filter((l) => l.label_type === config.type);
+  const stats = config.map((conf) => {
+    // Filtrar por tipo y severidad < 3
+    const typeLabels = labels.filter((l) => l.label_type === conf.type && l.severity < 3);
+    
     const avgSeverity = typeLabels.length > 0
       ? typeLabels.reduce((sum, l) => sum + l.severity, 0) / typeLabels.length
       : 0;
     
-    const severityDist = [1, 2, 3].map((sev) => ({
+    // Distribución solo para severidades 1 y 2
+    const severityDist = [1, 2].map((sev) => ({
       severity: sev,
       count: typeLabels.filter((l) => l.severity === sev).length,
     }));
 
     return {
-      ...config,
+      ...conf,
       count: typeLabels.length,
       avgSeverity: avgSeverity.toFixed(1),
       distribution: severityDist,
@@ -53,7 +55,7 @@ export const  ProblemTypeCards = ({ labels, loading }: ProblemTypeCardsProps) =>
   });
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {stats.map((stat) => (
         <Card key={stat.type} className="shadow-lg hover:shadow-xl transition-shadow">
           <CardContent className="p-6">
@@ -71,24 +73,24 @@ export const  ProblemTypeCards = ({ labels, loading }: ProblemTypeCardsProps) =>
             
             <div className="mb-3">
               <p className="text-xs text-muted-foreground mb-1">
-                Severidad promedio: {stat.avgSeverity} / 5.0 (Menor es mejor)
+                Calidad promedio: {stat.avgSeverity} / 2.0 (Menor es mejor)
               </p>
               <Progress 
-                value={parseFloat(stat.avgSeverity) * 20} 
-                className="h-2"
+                value={parseFloat(stat.avgSeverity) * 50} 
+                className="h-2 bg-muted [&>div]:bg-success"
               />
             </div>
 
             <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground">Distribución</p>
+              <p className="text-xs font-medium text-muted-foreground">Distribución por severidad</p>
               <div className="flex gap-1">
                 {stat.distribution.map((d) => (
                   <div
                     key={d.severity}
-                    className="flex-1 bg-muted rounded"
+                    className="flex-1 bg-muted rounded bg-success/30"
                     style={{ 
                       height: `${Math.max(d.count / stat.count * 60, 4)}px`,
-                      opacity: 0.5 + (d.severity / 10)
+                      opacity: 0.5 + (d.severity / 4)
                     }}
                     title={`Severidad ${d.severity}: ${d.count}`}
                   />

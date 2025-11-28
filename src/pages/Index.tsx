@@ -8,6 +8,7 @@ import { ProblemsDistribution } from "@/components/dashboard/ProblemsDistributio
 import { SeverityChart } from "@/components/dashboard/SeverityChart";
 import { AuditCoverage } from "@/components/dashboard/AuditCoverage";
 import { ProblemTypeCards } from "@/components/dashboard/ProblemTypeCards";
+import { RampsAndCrosswalksOk } from "@/components/dashboard/RampsAndCrosswalksOk";
 import { CallToAction } from "@/components/dashboard/CallToAction";
 import { Footer } from "@/components/dashboard/Footer";
 import { Separator } from "@/components/ui/separator";
@@ -118,7 +119,15 @@ const Index = () => {
           <ApiKPIs labels={labels} loading={loading} kmExplored={kmExplored} />
         </section>
 
-              {/* Problem Type Cards */}
+        {/* Ramps and Crosswalks OK */}
+        <section className="my-20">
+          <h2 className="text-3xl font-bold mb-8 text-foreground">
+            Rampas y cruces en buen estado
+          </h2>
+          <RampsAndCrosswalksOk labels={labels} loading={loading} />
+        </section>
+
+        {/* Problem Type Cards */}
         <section className="my-20">
           <h2 className="text-3xl font-bold mb-8 text-foreground">
             Tipos de Problemas Detectados
