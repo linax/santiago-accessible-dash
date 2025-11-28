@@ -4,6 +4,7 @@ import { NationalKPIs } from "@/components/dashboard/NationalKPIs";
 import { BarriersChart } from "@/components/dashboard/BarriersChart";
 import { ApiKPIs } from "@/components/dashboard/ApiKPIs";
 import { InteractiveMap } from "@/components/dashboard/InteractiveMap";
+import { ProblemFilters } from "@/components/dashboard/ProblemFilters";
 import { ProblemsDistribution } from "@/components/dashboard/ProblemsDistribution";
 import { SeverityChart } from "@/components/dashboard/SeverityChart";
 import { AuditCoverage } from "@/components/dashboard/AuditCoverage";
@@ -120,15 +121,14 @@ const Index = () => {
           <ApiKPIs labels={filteredLabels} loading={loading} kmExplored={kmExplored} />
         </section>
 
-        {/* Interactive Map */}
+        {/* Filters Section */}
         <section className="my-20">
           <h2 className="text-3xl font-bold mb-8 text-foreground">
-            Mapa de Accesibilidad
+            Filtros de Accesibilidad
           </h2>
-          <InteractiveMap 
+          <ProblemFilters 
             labels={filteredLabels}
             allLabels={labels}
-            loading={loading}
             filters={filters}
             onFilterChange={setFilters}
           />
@@ -138,6 +138,17 @@ const Index = () => {
         <section className="my-20 grid grid-cols-1 lg:grid-cols-2 gap-8">
           <ProblemsDistribution labels={filteredLabels} loading={loading} />
           <SeverityChart labels={filteredLabels} loading={loading} />
+        </section>
+
+        {/* Interactive Map */}
+        <section className="my-20">
+          <h2 className="text-3xl font-bold mb-8 text-foreground">
+            Mapa de Accesibilidad
+          </h2>
+          <InteractiveMap 
+            labels={filteredLabels}
+            loading={loading}
+          />
         </section>
 
         {/* Coverage */}
