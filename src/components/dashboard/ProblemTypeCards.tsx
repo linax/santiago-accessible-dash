@@ -10,8 +10,8 @@ interface ProblemTypeCardsProps {
 }
 
 const problemConfig = [
-  { type: "Obstacle", label: "Obstáculos", icon: Construction, color: "text-warning" },
-  { type: "SurfaceProblem", label: "Superficie", icon: LandPlot, color: "text-warning" },
+  { type: "Obstacle", label: "Obstáculos en la vereda", icon: Construction, color: "text-warning" },
+  { type: "SurfaceProblem", label: "Problema de superficie", icon: LandPlot, color: "text-warning" },
   { type: "NoCurbRamp", label: "Falta de rebajes de vereda", icon: AlertTriangle, color: "text-danger" },
 ];
 
@@ -39,7 +39,7 @@ export const  ProblemTypeCards = ({ labels, loading }: ProblemTypeCardsProps) =>
       ? typeLabels.reduce((sum, l) => sum + l.severity, 0) / typeLabels.length
       : 0;
     
-    const severityDist = [1, 2, 3, 4, 5].map((sev) => ({
+    const severityDist = [1, 2, 3].map((sev) => ({
       severity: sev,
       count: typeLabels.filter((l) => l.severity === sev).length,
     }));

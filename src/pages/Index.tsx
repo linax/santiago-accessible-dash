@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Header } from "@/components/dashboard/Header";
 import { NationalKPIs } from "@/components/dashboard/NationalKPIs";
-import { BarriersChart } from "@/components/dashboard/BarriersChart";
 import { ApiKPIs } from "@/components/dashboard/ApiKPIs";
 import { InteractiveMap } from "@/components/dashboard/InteractiveMap";
 import { ProblemFilters } from "@/components/dashboard/ProblemFilters";
@@ -9,8 +8,6 @@ import { ProblemsDistribution } from "@/components/dashboard/ProblemsDistributio
 import { SeverityChart } from "@/components/dashboard/SeverityChart";
 import { AuditCoverage } from "@/components/dashboard/AuditCoverage";
 import { ProblemTypeCards } from "@/components/dashboard/ProblemTypeCards";
-import { TimelineChart } from "@/components/dashboard/TimelineChart";
-import { CriticalZones } from "@/components/dashboard/CriticalZones";
 import { CallToAction } from "@/components/dashboard/CallToAction";
 import { Footer } from "@/components/dashboard/Footer";
 import { Separator } from "@/components/ui/separator";
@@ -121,6 +118,14 @@ const Index = () => {
           <ApiKPIs labels={labels} loading={loading} kmExplored={kmExplored} />
         </section>
 
+              {/* Problem Type Cards */}
+        <section className="my-20">
+          <h2 className="text-3xl font-bold mb-8 text-foreground">
+            Tipos de Problemas Detectados
+          </h2>
+          <ProblemTypeCards labels={labels} loading={loading} />
+        </section>
+
         {/* Filters Section */}
         <section className="my-20">
           <h2 className="text-3xl font-bold mb-8 text-foreground">
@@ -156,13 +161,7 @@ const Index = () => {
           <AuditCoverage labels={filteredLabels} loading={loading} kmExplored={kmExplored} />
         </section>
 
-        {/* Problem Type Cards */}
-        <section className="my-20">
-          <h2 className="text-3xl font-bold mb-8 text-foreground">
-            Tipos de Problemas Detallados
-          </h2>
-          <ProblemTypeCards labels={labels} loading={loading} />
-        </section>
+  
 
   
 
