@@ -17,18 +17,17 @@ interface InteractiveMapProps {
 }
 
 const problemTypes = [
-  { id: "CurbRamp", label: "Rampas", color: "#22C55E" }, // Verde
-  { id: "Obstacle", label: "Obstáculos", color: "#F97316" }, // Naranjo
-  { id: "SurfaceProblem", label: "Superficie", color: "#3B82F6" }, // Azul
-  { id: "Crosswalk", label: "Cruces", color: "#EAB308" }, // Amarillo
-  { id: "NoCurbRamp", label: "Falta rebaje de vereda", color: "#EF4444" }, // Rojo
+ { id: "NoCurbRamp", label: "Falta rebaje de vereda", color: "#800020" }, 
+  { id: "SurfaceProblem", label: "Superficie", color: "#FF0000" }, 
+  { id: "Obstacle", label: "Obstáculos", color: "#3B82F6" }, 
+  { id: "Crosswalk", label: "Cruces", color: "#EAB308" }, 
+   { id: "CurbRamp", label: "Rampas", color: "#22C55E" }, 
 ];
 
 // Diccionario de traducciones para tags de obstáculos
 const obstacleTagTranslations: Record<string, string> = {
   "construction": "construcción",
   "litter/garbage": "basura en la vereda",
-  "litter/gardbage": "basura en la vereda", // Manejo de typo en el tag original
   "narrow": "vereda angosta",
   "parked bike": "bicicleta estacionada",
   "parked car": "auto estacionado",
@@ -40,14 +39,15 @@ const obstacleTagTranslations: Record<string, string> = {
 // Diccionario de traducciones para tags de problemas de superficie
 const surfaceProblemTagTranslations: Record<string, string> = {
   "brick/cobberstone": "adoquines",
-  "brick/cobblestone": "adoquines", // Manejo de variación de escritura
+  "brick/cobblestone": "adoquines",
+  "sand/gravel": "arena o gravilla", // Manejo de variación de escritura
   "bumpy": "disparejo",
   "cracks": "grietas",
   "height difference": "desnivel",
   "narrow sidewalk": "vereda angosta",
   "uneven/slanted": "inclinación",
   "utility panel": "tapa o cámara de servicio",
-  "very broken": "muy rota",
+  "very broken": "muy deteriorada",
 };
 
 // Función helper para traducir tags de obstáculos
@@ -141,7 +141,7 @@ export const InteractiveMap = ({ labels, allLabels, loading, filters, onFilterCh
       const color = typeConfig?.color || "#6B7280";
 
       const marker = L.circleMarker([label.lat, label.lng], {
-        radius: 8,
+        radius: 7,
         fillColor: color,
         color: "#fff",
         weight: 2,
