@@ -118,7 +118,7 @@ const Index = () => {
           <h2 className="text-3xl font-bold mb-8 text-foreground">
             Datos de Accesibilidad en Santiago
           </h2>
-          <ApiKPIs labels={filteredLabels} loading={loading} kmExplored={kmExplored} />
+          <ApiKPIs labels={labels} loading={loading} kmExplored={kmExplored} />
         </section>
 
         {/* Filters Section */}
@@ -161,7 +161,7 @@ const Index = () => {
           <h2 className="text-3xl font-bold mb-8 text-foreground">
             Tipos de Problemas Detallados
           </h2>
-          <ProblemTypeCards labels={filteredLabels} loading={loading} />
+          <ProblemTypeCards labels={labels} loading={loading} />
         </section>
 
   

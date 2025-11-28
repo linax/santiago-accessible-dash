@@ -2,19 +2,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 import { LabelData } from "@/lib/types";
+import { problemTypes } from "@/lib/constants/problemTypes";
 
 interface ProblemsDistributionProps {
   labels: LabelData[];
   loading: boolean;
 }
 
-const COLORS = {
-  CurbRamp: "#EF4444",
-  Obstacle: "#F59E0B",
-  SurfaceProblem: "#EAB308",
-  NoCrosswalk: "#3B82F6",
-  NoCurbRamp: "#6B7280",
-
+// Helper para obtener el color basado en el tipo
+const getColorForType = (type: string) => {
+  // Mapeo especial para casos que podrían no estar exactamente en problemTypes
+  if (type === "NoCrosswalk") return problemTypes.find(p => p.id === "Crosswalk")?.color || "#EAB308";
+  
+  const problem = problemTypes.find(p => p.id === type);
+  return problem ? problem.color : "#8884d8";
 };
 
 export const ProblemsDistribution = ({ labels, loading }: ProblemsDistributionProps) => {
@@ -73,7 +74,7 @@ export const ProblemsDistribution = ({ labels, loading }: ProblemsDistributionPr
               dataKey="value"
             >
               {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[entry.originalName as keyof typeof COLORS]} />
+                <Cell key={`cell-${index}`} fill={getColorForType(entry.originalName)} />
               ))}
             </Pie>
             <Tooltip />
