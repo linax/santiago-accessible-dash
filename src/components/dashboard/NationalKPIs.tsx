@@ -22,7 +22,7 @@ const kpis = [
   },
   {
     icon: Users2,
-    value: "43%",
+    value: "18%",
     label: "Adultos mayores 65+",
     color: "text-primary",
   },
@@ -32,7 +32,7 @@ export const NationalKPIs = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {kpis.map((kpi, index) => (
-        <Card key={index} className="shadow-lg hover:shadow-xl transition-shadow bg-green-light border-green-light">
+        <Card key={index} className="shadow-lg hover:shadow-xl traynsition-shadow bg-green-light border-green-light">
           <CardContent className="p-6">
             <div className="flex items-start justify-between mb-4">
               <kpi.icon className="h-10 w-10 text-green-light-foreground" />
