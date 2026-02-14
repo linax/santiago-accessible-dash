@@ -22,7 +22,7 @@ export const InteractiveMap = ({ labels, loading }: InteractiveMapProps) => {
     const map = L.map(mapRef.current).setView([-33.4411, -70.65343], 15);
     
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Data: <a href="https://sidewalk-santiago.cs.washington.edu/" target="_blank">Project Sidewalk API</a>',
     }).addTo(map);
 
     mapInstanceRef.current = map;
