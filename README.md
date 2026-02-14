@@ -1,73 +1,61 @@
-# Welcome to your Lovable project
+# Santiago Accessible Dashoard ♿️🇨🇱
 
-## Project info
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-B73C9D?style=for-the-badge&logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)
 
-**URL**: https://lovable.dev/projects/00a08af0-f114-4c7c-b27e-aca4f94b34cf
+> **Urban accessibility data visualization for Santiago, Chile.** > This interactive dashboard empowers urban planners and citizens to identify sidewalk obstacles and evaluate route conditions, leveraging civic data to improve mobility for people with disabilities. 
+The data use [Project Sidewalk](https://sidewalk-santiago.cs.washington.edu/) data from Santiago
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 📖 Project Context
 
-**Use Lovable**
+Accessibility in Latin American cities presents unique infrastructure challenges. This project aims to **democratize access to sidewalk condition data**, providing a clear visualization layer for complex geospatial information.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/00a08af0-f114-4c7c-b27e-aca4f94b34cf) and start prompting.
+Built with a focus on modern frontend standards, this dashboard prioritizes:
+* **High Performance:** Efficient rendering of large geospatial datasets.
+* **Inclusive UX/UI:** Clean interface built with *shadcn/ui*, adhering to web accessibility principles (a11y).
+* **Scalable Architecture:** Modular design ready for future integrations (e.g., Machine Learning models for automated obstacle detection).
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🚀 Tech Stack
 
-**Use your preferred IDE**
+* **Core:** React 18, TypeScript, Vite.
+* **Styling:** Tailwind CSS.
+* **UI Components:** shadcn/ui.
+* **Deployment:** Vercel / Netlify (Configurable).
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🛠️ Local Setup
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Follow these steps to get the project running in your local environment:
 
-Follow these steps:
+1.  **Clone the repository**
+    ```bash
+    git clone [https://github.com/linax/santiago-accessible-dash.git](https://github.com/linax/santiago-accessible-dash.git)
+    cd santiago-accessible-dash
+    ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+2.  **Install dependencies**
+    ```bash
+    npm install
+    # or if using bun (detected in repo)
+    bun install
+    ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+3.  **Start development server**
+    ```bash
+    npm run dev
+    ```
+    The dashboard will be available at `http://localhost:8080`.
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 📂 Project Structure
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/00a08af0-f114-4c7c-b27e-aca4f94b34cf) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+```text
+src/
+├── components/   # Reusable UI components & Map logic
+├── hooks/        # Custom hooks for state management
+├── pages/        # Main application views
+├── lib/          # Utilities & shadcn configuration
+└── main.tsx      # Entry point

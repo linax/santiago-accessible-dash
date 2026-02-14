@@ -170,9 +170,6 @@ const Index = () => {
           <AuditCoverage labels={filteredLabels} loading={loading} kmExplored={kmExplored} />
         </section>
 
-  
-
-  
 
         {/* CTA */}
         <section className="my-20">

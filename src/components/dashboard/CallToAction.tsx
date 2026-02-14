@@ -8,11 +8,11 @@ export const CallToAction = () => {
       <CardContent className="p-8 md:p-12">
         <div className="text-center max-w-3xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
-            ¡Contribuye a Mejorar la Accesibilidad!
+            ¡Contribuye a Mejorar la Accesibilidad en Chile!
           </h2>
           
           <p className="text-lg text-muted-foreground mb-8">
-            Únete a la comunidad de Sidewalk Project y ayuda a mapear las barreras de accesibilidad en tu ciudad
+            Únete a la comunidad de Sidewalk Project en alianza con Ciudad Fácil, en Chil, y ayuda a mapear las barreras de accesibilidad en tu ciudad
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -30,8 +30,8 @@ export const CallToAction = () => {
             
             <div className="flex flex-col items-center gap-2">
               <ExternalLink className="h-10 w-10 text-warning" />
-              <div className="text-2xl font-bold text-foreground">12 ciudades</div>
-              <div className="text-sm text-muted-foreground">En todo el mundo</div>
+              <div className="text-2xl font-bold text-foreground">2 ciudades</div>
+              <div className="text-sm text-muted-foreground">En Chile</div>
             </div>
           </div>
 
